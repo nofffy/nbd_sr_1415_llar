@@ -75,6 +75,6 @@ public class Plant {
     }
 
     public String getInfo() {
-        return getPlantType().getInfo();
+        return "Name: "+name+", color: "+color+", cost: "+cost+"; "+getPlantType().getInfo();
     }
 }
