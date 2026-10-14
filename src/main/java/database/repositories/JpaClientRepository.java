@@ -1,39 +1,30 @@
-package database.adapter;
+package database.repositories;
 
-import database.JpaMapper;
 import database.entities.ClientEnt;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
-import model.Client;
-import model.repositories.ClientRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class JpaClientRepositoryAdapter implements ClientRepository {
+public class JpaClientRepository {
     private EntityManagerFactory emf;
 
-    public JpaClientRepositoryAdapter() {
-        this.emf = Persistence.createEntityManagerFactory("default");
+    public JpaClientRepository() {
+        this.emf = database.DatabaseManager.getEmf();
     }
 
-    @Override
-    public Client getClient(int id) {
+    public ClientEnt getClient(int id) {
         try (EntityManager em = emf.createEntityManager()) {
-            ClientEnt ent = em.find(ClientEnt.class, id);
-            return JpaMapper.clientEntToObj(ent);
+            return em.find(ClientEnt.class, id);
         }
     }
 
-    @Override
-    public boolean addClient(Client client) {
+    public boolean addClient(ClientEnt ent) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                ClientEnt ent = JpaMapper.clientObjToEnt(client);
                 em.persist(ent);
                 txn.commit();
                 return true;
@@ -46,18 +37,15 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         }
     }
 
-    public void updateClient(Client client, EntityManager em) {
-        ClientEnt ent = JpaMapper.clientObjToEnt(client);
+    public void updateClient(ClientEnt ent, EntityManager em) {
         em.merge(ent);
     }
 
-    @Override
-    public boolean updateClient(Client client) {
+    public boolean updateClient(ClientEnt ent) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                ClientEnt ent = JpaMapper.clientObjToEnt(client);
                 em.merge(ent);
                 txn.commit();
                 return true;
@@ -70,19 +58,17 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         }
     }
 
-    @Override
-    public boolean removeClient(int id){
+    public boolean removeClient(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
                 ClientEnt ent = em.find(ClientEnt.class, id);
-                if(ent!=null){
+                if (ent != null) {
                     em.remove(ent);
                     txn.commit();
                     return true;
-                }
-                else{
+                } else {
                     txn.rollback();
                     return false;
                 }
@@ -95,14 +81,12 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         }
     }
 
-    @Override
-    public boolean saveClients(List<Client> clients){
+    public boolean addClients(List<ClientEnt> ents) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                for(Client client:clients){
-                    ClientEnt ent = JpaMapper.clientObjToEnt(client);
+                for (ClientEnt ent : ents) {
                     em.persist(ent);
                 }
                 txn.commit();
@@ -116,23 +100,17 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         }
     }
 
-    @Override
-    public List<Client> getClients() {
+    public List<ClientEnt> getClients() {
         String query = "SELECT p FROM ClientEnt p";
-        List<ClientEnt> list;
         try (EntityManager em = emf.createEntityManager()) {
-            list = em.createQuery(query, ClientEnt.class).getResultList();
-            List<Client> clients = new ArrayList<>();
-            for(ClientEnt ent:list) {
-                clients.add(JpaMapper.clientEntToObj(ent));
-            }
-            return clients;
+            return em.createQuery(query, ClientEnt.class).getResultList();
         }
     }
 
-    @Override
-    public int sizeClients() {
-        return getClients().size();
+    public int countClients() {
+        String query = "SELECT COUNT(p) FROM ClientEnt p";
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(query, Long.class).getSingleResult().intValue();
+        }
     }
-
 }

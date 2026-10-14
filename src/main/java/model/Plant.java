@@ -17,15 +17,6 @@ public class Plant {
         this.plantType = plantType;
     }
 
-    public Plant(String name, String color, double cost, boolean sold, PlantType plantType) {
-        this.id = 0;
-        this.name = name;
-        this.color = color;
-        this.cost = cost;
-        this.sold = sold;
-        this.plantType = plantType;
-    }
-
     public int getId() {
         return id;
     }

@@ -13,13 +13,6 @@ public class Client {
         this.member = member;
     }
 
-    public Client(String name, double moneySpent, boolean member) {
-        this.id = 0;
-        this.name = name;
-        this.moneySpent = moneySpent;
-        this.member = member;
-    }
-
     public Client(String name) {
         this.id = 0;
         this.name = name;

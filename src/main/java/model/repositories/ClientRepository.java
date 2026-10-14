@@ -10,7 +10,7 @@ public interface ClientRepository {
     boolean updateClient(Client client);
     boolean removeClient(int id);
 
-    boolean saveClients(List<Client> clients);
+    boolean addClients(List<Client> clients);
     List<Client> getClients();
     int sizeClients();
 }

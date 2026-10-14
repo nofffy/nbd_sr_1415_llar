@@ -1,0 +1,12 @@
+package database;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+public class DatabaseManager {
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+
+    public static EntityManagerFactory getEmf() {
+        return emf;
+    }
+}

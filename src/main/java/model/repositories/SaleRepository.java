@@ -1,6 +1,5 @@
 package model.repositories;
 
-import database.entities.SaleEnt;
 import model.Sale;
 
 import java.util.List;
@@ -11,5 +10,5 @@ public interface SaleRepository {
     boolean removeSale(int id);
 
     List<Sale> getSales();
-    int getSalesCount();
+    int sizeSales();
 }

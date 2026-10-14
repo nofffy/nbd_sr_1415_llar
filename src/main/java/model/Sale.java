@@ -9,13 +9,6 @@ public class Sale {
     private List<Plant> plants;
     private LocalDateTime timeOfSale;
 
-    public Sale(int id, Client client, List<Plant> plants) {
-        this.id = id;
-        this.client = client;
-        this.plants = plants;
-        this.timeOfSale = LocalDateTime.now();
-    }
-
     public Sale(Client client, List<Plant> plants) {
         this.id = 0;
         this.client = client;

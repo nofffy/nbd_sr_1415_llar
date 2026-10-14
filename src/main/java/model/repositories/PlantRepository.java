@@ -10,7 +10,7 @@ public interface PlantRepository {
     boolean removePlant(int id);
     boolean updatePlant(Plant plant);
 
-    boolean savePlants(List<Plant> plants);
+    boolean addPlants(List<Plant> plants);
     List<Plant> getPlants();
 
     List<Plant> findAllUnsold();

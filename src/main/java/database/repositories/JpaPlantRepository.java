@@ -1,37 +1,30 @@
-package database.adapter;
+package database.repositories;
 
-import database.JpaMapper;
-import database.entities.*;
-import jakarta.persistence.*;
-import model.Client;
-import model.Plant;
-import model.repositories.PlantRepository;
+import database.entities.PlantEnt;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class JpaPlantRepositoryAdapter implements PlantRepository {
+public class JpaPlantRepository {
     private EntityManagerFactory emf;
 
-    public JpaPlantRepositoryAdapter() {
-        this.emf = Persistence.createEntityManagerFactory("default");
+    public JpaPlantRepository() {
+        this.emf = database.DatabaseManager.getEmf();
     }
 
-    @Override
-    public Plant getPlant(int id) { //UUID?
+    public PlantEnt getPlant(int id) {
         try (EntityManager em = emf.createEntityManager()) {
-            PlantEnt ent = em.find(PlantEnt.class, id);
-            return JpaMapper.plantEntToObj(ent);
+            return em.find(PlantEnt.class, id);
         }
     }
 
-    @Override
-    public boolean addPlant(Plant plant) {
+    public boolean addPlant(PlantEnt ent) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                PlantEnt ent = JpaMapper.plantObjToEnt(plant);
                 em.persist(ent);
                 txn.commit();
                 return true;
@@ -44,19 +37,17 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
         }
     }
 
-    @Override
     public boolean removePlant(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
                 PlantEnt ent = em.find(PlantEnt.class, id);
-                if(ent!=null){
+                if (ent != null) {
                     em.remove(ent);
                     txn.commit();
                     return true;
-                }
-                else{
+                } else {
                     txn.rollback();
                     return false;
                 }
@@ -69,14 +60,20 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
         }
     }
 
-    @Override
-    public boolean updatePlant(Plant plant) {
+    public boolean updatePlant(PlantEnt ent) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                PlantEnt ent = JpaMapper.plantObjToEnt(plant);
-                em.merge(ent);
+                PlantEnt dbPlant = em.find(PlantEnt.class, ent.getId());
+                if (dbPlant == null) {
+                    txn.rollback();
+                    return false;
+                }
+                dbPlant.setName(ent.getName());
+                dbPlant.setColor(ent.getColor());
+                dbPlant.setCost(ent.getCost());
+                dbPlant.setSold(ent.isSold());
                 txn.commit();
                 return true;
             } catch (Exception e) {
@@ -88,19 +85,17 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
         }
     }
 
-    public void updatePlant(Plant plant, EntityManager em) {
-        PlantEnt ent = JpaMapper.plantObjToEnt(plant);
-        em.merge(ent);
+    public void updatePlant(PlantEnt ent, EntityManager em) {
+        PlantEnt Pent = em.find(PlantEnt.class, ent.getId());
+        Pent.setSold(ent.isSold());
     }
 
-    @Override
-    public boolean savePlants(List<Plant> plants) {
+    public boolean addPlants(List<PlantEnt> ents) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                for(Plant plant:plants){
-                    PlantEnt ent = JpaMapper.plantObjToEnt(plant);
+                for (PlantEnt ent : ents) {
                     em.persist(ent);
                 }
                 txn.commit();
@@ -114,41 +109,19 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
         }
     }
 
-    @Override
-    public List<Plant> getPlants() {
+    public List<PlantEnt> getPlants() {
         String query = "SELECT p FROM PlantEnt p";
-        List<PlantEnt> list;
         try (EntityManager em = emf.createEntityManager()) {
-            list = em.createQuery(query, PlantEnt.class).getResultList();
-            List<Plant> plants = new ArrayList<>();
-            for(PlantEnt ent:list) {
-                plants.add(JpaMapper.plantEntToObj(ent));
-            }
-            return plants;
+            return em.createQuery(query, PlantEnt.class).getResultList();
         }
     }
 
-    public List<Plant> findAllSoldOrNot(boolean choice) {
+    public List<PlantEnt> findAllSoldOrNot(boolean choice) {
         String query = "SELECT p FROM PlantEnt p WHERE p.sold=:choice";
-        List<PlantEnt> list;
         try (EntityManager em = emf.createEntityManager()) {
-            list = em.createQuery(query, PlantEnt.class).setParameter("choice", choice).getResultList();
-
-            List<Plant> plants = new ArrayList<>();
-            for(PlantEnt ent:list) {
-                plants.add(JpaMapper.plantEntToObj(ent));
-            }
-            return plants;
+            return em.createQuery(query, PlantEnt.class)
+                    .setParameter("choice", choice)
+                    .getResultList();
         }
-    }
-
-    @Override
-    public List<Plant> findAllUnsold() {
-        return findAllSoldOrNot(false);
-    }
-
-    @Override
-    public List<Plant> findAllSold() {
-        return findAllSoldOrNot(true);
     }
 }

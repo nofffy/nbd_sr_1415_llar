@@ -10,7 +10,9 @@
       <property name="jakarta.persistence.jdbc.user" value="nbd"/>
       <property name="jakarta.persistence.jdbc.password" value="nbdpassword"/>
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+      <property name="jakarta.persistence.jdbc.isolation" value="2"/>
+      <property name="hibernate.connection.isolation" value="2"/>
     </properties>
   </persistence-unit>
 
