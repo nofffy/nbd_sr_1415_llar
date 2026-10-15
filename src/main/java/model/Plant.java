@@ -7,6 +7,7 @@ public class Plant {
     private double cost;
     private boolean sold;
     private PlantType plantType;
+    private final int version;
 
     public Plant(int id, String name, String color, double cost, boolean sold, PlantType plantType) {
         this.id = id;
@@ -15,6 +16,17 @@ public class Plant {
         this.cost = cost;
         this.sold = sold;
         this.plantType = plantType;
+        this.version = 0;
+    }
+
+    public Plant(int id, String name, String color, double cost, boolean sold, PlantType plantType, int version) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.cost = cost;
+        this.sold = sold;
+        this.plantType = plantType;
+        this.version = version;
     }
 
     public int getId() {
@@ -63,6 +75,10 @@ public class Plant {
 
     public void setPlantType(PlantType plantType) {
         this.plantType = plantType;
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public String getInfo() {

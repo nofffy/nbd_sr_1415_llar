@@ -16,6 +16,14 @@ public class ClientEnt {
 
     public ClientEnt() {}
 
+    public ClientEnt(int id, String name, double moneySpent, boolean member, int version) {
+        this.id = id;
+        this.name = name;
+        this.moneySpent = moneySpent;
+        this.member = member;
+        this.version = version;
+    }
+
     public int getId() {
         return id;
     }
@@ -46,5 +54,9 @@ public class ClientEnt {
 
     public void setMember(boolean member) {
         this.member = member;
+    }
+
+    public int getVersion() {
+        return version;
     }
 }

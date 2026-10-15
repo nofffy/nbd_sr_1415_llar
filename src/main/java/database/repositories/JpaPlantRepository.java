@@ -68,27 +68,7 @@ public class JpaPlantRepository {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                PlantEnt dbPlant = em.find(PlantEnt.class, ent.getId());
-                if (dbPlant == null) {
-                    txn.rollback();
-                    return false;
-                }
-                dbPlant.setName(ent.getName());
-                dbPlant.setColor(ent.getColor());
-                dbPlant.setCost(ent.getCost());
-                dbPlant.setSold(ent.isSold());
-                if (dbPlant instanceof SucculentEnt dbSucculent) {
-                    SucculentEnt MainEnt = (SucculentEnt) ent;
-                    dbSucculent.setSpiky(MainEnt.isSpiky());
-                }
-                else if (dbPlant instanceof CarnivorousEnt dbCarnivorous) {
-                    CarnivorousEnt MainEnt = (CarnivorousEnt) ent;
-                    dbCarnivorous.setFavouriteFood(MainEnt.getFavouriteFood());
-                }
-                else if (dbPlant instanceof MonsteraEnt dbMonstera) {
-                    MonsteraEnt MainEnt = (MonsteraEnt) ent;
-                    dbMonstera.setLeafSize(MainEnt.getLeafSize());
-                }
+                updatePlant(ent, em);
                 txn.commit();
                 return true;
             } catch (Exception e) {
@@ -102,7 +82,7 @@ public class JpaPlantRepository {
 
     public void updatePlant(PlantEnt ent, EntityManager em) {
         PlantEnt dbPlant = em.find(PlantEnt.class, ent.getId());
-        if (dbPlant == null || dbPlant.isSold()) {
+        if (dbPlant == null || dbPlant.isSold() || dbPlant.getVersion() != ent.getVersion()) {
             throw new jakarta.persistence.OptimisticLockException("Roslina jest juz sprzedana");
         }
         dbPlant.setName(ent.getName());

@@ -23,6 +23,15 @@ public abstract class PlantEnt {
 
     public PlantEnt() {}
 
+    public PlantEnt(int id, String name, String color, double cost, boolean sold, SaleEnt sale, int version) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.cost = cost;
+        this.sold = sold;
+        this.version = version;
+    }
+
     public int getId() {
         return id;
     }
@@ -69,5 +78,9 @@ public abstract class PlantEnt {
 
     public void setSale(SaleEnt sale) {
         this.sale = sale;
+    }
+
+    public int getVersion() {
+        return version;
     }
 }

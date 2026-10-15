@@ -10,41 +10,44 @@ import model.types.Succulent;
 
 public class JpaPlantMapper {
     public static PlantEnt ObjToEnt(Plant plant) {
-        PlantEnt ent;
+        if (plant == null) return null;
+
+        int id = plant.getId();
+        String name = plant.getName();
+        String color = plant.getColor();
+        double cost = plant.getCost();
+        boolean sold = plant.isSold();
+        SaleEnt sale = new SaleEnt();
+        int version = plant.getVersion();
+
         PlantType type = plant.getPlantType();
-        if(type instanceof Basic) {
-            ent = new BasicEnt();
-        }
-        else if(type instanceof Carnivorous) {
-            Carnivorous carnivorous = (Carnivorous) type;
 
-            CarnivorousEnt ent1 = new CarnivorousEnt();
-            ent1.setFavouriteFood(carnivorous.getFavouriteFood());
-            ent = ent1;
+        if (type instanceof Basic) {
+            return new BasicEnt(id, name, color, cost, sold, sale, version);
         }
-        else if(type instanceof Monstera) {
-            Monstera monstera = (Monstera) type;
+        else if (type instanceof Carnivorous carnivorous) {
+            return new CarnivorousEnt(
+                    id, name, color, cost, sold, sale,
+                    carnivorous.getFavouriteFood(),
+                    version
+            );
+        }
+        else if (type instanceof Monstera monstera) {
+            return new MonsteraEnt(
+                    id, name, color, cost, sold, sale,
+                    monstera.getLeafSize(),
+                    version
+            );
+        }
+        else if (type instanceof Succulent succulent) {
+            return new SucculentEnt(
+                    id, name, color, cost, sold, sale,
+                    succulent.isSpiky(),
+                    version
+            );
+        }
 
-            MonsteraEnt ent1 = new MonsteraEnt();
-            ent1.setLeafSize(monstera.getLeafSize());
-            ent = ent1;
-        }
-        else if(type instanceof Succulent) {
-            Succulent succulent = (Succulent) type;
-
-            SucculentEnt ent1 = new SucculentEnt();
-            ent1.setSpiky(succulent.isSpiky());
-            ent = ent1;
-        }
-        else {
-            return null;
-        }
-        ent.setId(plant.getId());
-        ent.setName(plant.getName());
-        ent.setColor(plant.getColor());
-        ent.setSold(plant.isSold());
-        ent.setCost(plant.getCost());
-        return ent;
+        return null;
     }
 
     public static Plant EntToObj(PlantEnt plantEnt) {
@@ -70,7 +73,8 @@ public class JpaPlantMapper {
                 plantEnt.getColor(),
                 plantEnt.getCost(),
                 plantEnt.isSold(),
-                type
+                type,
+                plantEnt.getVersion()
         );
     }
 }

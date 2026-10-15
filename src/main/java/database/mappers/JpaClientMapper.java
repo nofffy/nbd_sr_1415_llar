@@ -5,12 +5,12 @@ import model.Client;
 
 public class JpaClientMapper {
     public static ClientEnt ObjToEnt(Client client) {
-        ClientEnt clientEnt = new ClientEnt();
-        clientEnt.setId(client.getId());
-        clientEnt.setName(client.getName());
-        clientEnt.setMoneySpent(client.getMoneySpent());
-        clientEnt.setMember(client.isMember());
-        return clientEnt;
+        return new ClientEnt(
+                client.getId(),
+                client.getName(),
+                client.getMoneySpent(),
+                client.isMember(),
+                client.getVersion());
     }
 
     public static Client EntToObj(ClientEnt clientEnt){
@@ -18,7 +18,8 @@ public class JpaClientMapper {
                 clientEnt.getId(),
                 clientEnt.getName(),
                 clientEnt.getMoneySpent(),
-                clientEnt.isMember()
+                clientEnt.isMember(),
+                clientEnt.getVersion()
         );
     }
 }
