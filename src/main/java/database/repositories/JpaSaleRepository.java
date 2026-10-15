@@ -40,7 +40,7 @@ public class JpaSaleRepository {
                 if (txn.isActive()) {
                     txn.rollback();
                 }
-                System.out.println("Zakup anulowany, roślina została przed chwila kupiona");
+                System.out.println("Błąd transakcji: " + e.getMessage());
                 return false;
             } catch (Exception e) {
                 if (txn.isActive()) {
@@ -74,16 +74,12 @@ public class JpaSaleRepository {
         }
     }
 
-    public List<SaleEnt> getSales() {
-        String query = "SELECT p FROM SaleEnt p JOIN FETCH p.plants";
+    public List<SaleEnt> getClientSales(int clientId) {
+        String query = "SELECT DISTINCT s FROM SaleEnt s JOIN FETCH s.plants WHERE s.client.id = :clientId";
         try (EntityManager em = emf.createEntityManager()) {
-            List<SaleEnt> list = em.createQuery(query, SaleEnt.class).getResultList();
-            for (SaleEnt ent : list) {
-                if (ent.getPlants() != null) {
-                    ent.getPlants().size();
-                }
-            }
-            return list;
+            return em.createQuery(query, SaleEnt.class)
+                    .setParameter("clientId", clientId)
+                    .getResultList();
         }
     }
 

@@ -1,19 +1,8 @@
 package database.repositories.adapters;
 
-import database.entities.ClientEnt;
-import database.entities.PlantEnt;
 import database.entities.SaleEnt;
-import database.mappers.JpaClientMapper;
-import database.mappers.JpaPlantMapper;
 import database.mappers.JpaSaleMapper;
-import database.repositories.JpaClientRepository;
-import database.repositories.JpaPlantRepository;
 import database.repositories.JpaSaleRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.RollbackException;
-import model.Plant;
 import model.Sale;
 import model.repositories.SaleRepository;
 
@@ -48,8 +37,8 @@ public class JpaSaleRepositoryAdapter implements SaleRepository {
     }
 
     @Override
-    public List<Sale> getSales() {
-        List<SaleEnt> list = repo.getSales();
+    public List<Sale> getClientSales(int clientId) {
+        List<SaleEnt> list = repo.getClientSales(clientId);
         List<Sale> sales = new ArrayList<>();
         for (SaleEnt ent : list) {
             sales.add(JpaSaleMapper.EntToObj(ent));

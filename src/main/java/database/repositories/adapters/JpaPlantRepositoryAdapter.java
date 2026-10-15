@@ -3,7 +3,6 @@ package database.repositories.adapters;
 import database.entities.PlantEnt;
 import database.mappers.JpaPlantMapper;
 import database.repositories.JpaPlantRepository;
-import jakarta.persistence.EntityManager;
 import model.Plant;
 import model.repositories.PlantRepository;
 
@@ -29,6 +28,9 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
     @Override
     public boolean addPlant(Plant plant) {
         PlantEnt ent = JpaPlantMapper.ObjToEnt(plant);
+        if (ent == null) {
+            return false;
+        }
         boolean result = repo.addPlant(ent);
         if (result) {
             plant.setId(ent.getId());

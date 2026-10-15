@@ -9,6 +9,6 @@ public interface SaleRepository {
     boolean addSale(Sale sale);
     boolean removeSale(int id);
 
-    List<Sale> getSales();
+    List<Sale> getClientSales(int clientId);
     int sizeSales();
 }

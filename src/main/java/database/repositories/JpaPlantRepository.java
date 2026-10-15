@@ -1,6 +1,9 @@
 package database.repositories;
 
+import database.entities.CarnivorousEnt;
+import database.entities.MonsteraEnt;
 import database.entities.PlantEnt;
+import database.entities.SucculentEnt;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -74,6 +77,18 @@ public class JpaPlantRepository {
                 dbPlant.setColor(ent.getColor());
                 dbPlant.setCost(ent.getCost());
                 dbPlant.setSold(ent.isSold());
+                if (dbPlant instanceof SucculentEnt dbSucculent) {
+                    SucculentEnt MainEnt = (SucculentEnt) ent;
+                    dbSucculent.setSpiky(MainEnt.isSpiky());
+                }
+                else if (dbPlant instanceof CarnivorousEnt dbCarnivorous) {
+                    CarnivorousEnt MainEnt = (CarnivorousEnt) ent;
+                    dbCarnivorous.setFavouriteFood(MainEnt.getFavouriteFood());
+                }
+                else if (dbPlant instanceof MonsteraEnt dbMonstera) {
+                    MonsteraEnt MainEnt = (MonsteraEnt) ent;
+                    dbMonstera.setLeafSize(MainEnt.getLeafSize());
+                }
                 txn.commit();
                 return true;
             } catch (Exception e) {
@@ -86,8 +101,11 @@ public class JpaPlantRepository {
     }
 
     public void updatePlant(PlantEnt ent, EntityManager em) {
-        PlantEnt Pent = em.find(PlantEnt.class, ent.getId());
-        Pent.setSold(ent.isSold());
+        PlantEnt plantent = em.find(PlantEnt.class, ent.getId());
+        if (plantent == null || plantent.isSold()) {
+            throw new jakarta.persistence.OptimisticLockException("Roslina jest juz sprzedana");
+        }
+        plantent.setSold(ent.isSold());
     }
 
     public boolean addPlants(List<PlantEnt> ents) {

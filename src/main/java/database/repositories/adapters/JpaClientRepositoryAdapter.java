@@ -36,11 +36,6 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         return result;
     }
 
-    public void updateClient(Client client, EntityManager em) {
-        ClientEnt ent = JpaClientMapper.ObjToEnt(client);
-        repo.updateClient(ent, em);
-    }
-
     @Override
     public boolean updateClient(Client client) {
         ClientEnt ent = JpaClientMapper.ObjToEnt(client);

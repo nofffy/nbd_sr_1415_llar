@@ -130,12 +130,35 @@ public class Main {
         Client ostatecznyTomasz = clientRepo.getClient(tomaszId);
         System.out.println("ostateczne wydatki michala: " + ostatecznyMichal.getMoneySpent() + " (przed wyscigiem: 445.0)");
         System.out.println("ostateczne wydatki tomasza: " + ostatecznyTomasz.getMoneySpent() + " (przed wyscigiem: 80.0)");
-        System.out.println("liczba paragonow po wyscigu: " + saleRepo.getSales().size() + " -> ma byc: 3");
+        System.out.println("liczba paragonow po wyscigu: " + saleRepo.sizeSales() + " -> ma byc: 3");
         System.out.println("monstera 4 sprzedana: " + plantRepo.getPlant(4).isSold() + " -> ma byc: true");
 
         System.out.println("\n=== 6. usuwanie paragonu ===");
         boolean usunietoParagon = saleRepo.removeSale(2);
         System.out.println("usuniecie paragonu 2: " + (usunietoParagon ? "ok" : "blad") + " -> ma byc: ok");
         System.out.println("liczba paragonow na koniec: " + saleRepo.sizeSales() + " -> ma byc: 2");
+
+        System.out.println("\n=== 7. test proby kupienia juz sprzedanej rosliny ===");
+        Client Hacker = clientRepo.getClient(1);
+        double michalBefore = Hacker.getMoneySpent();
+        Plant soldPlant = plantRepo.getPlant(1);
+
+        //test czy baza sie odpowiednio ochroni
+        soldPlant.setSold(false);
+
+        List<Plant> soldKoszyk = new ArrayList<>();
+        soldKoszyk.add(soldPlant);
+        System.out.println("proba zakupu rosliny id 1 (ktora w bazie jest juz sprzedana)...");
+        boolean sukcesSpozniony = shopService.newSale(Hacker, soldKoszyk);
+        System.out.println("status spoznionego zakupu: " + (sukcesSpozniony ? "przeszlo (blad!)" : "odrzucono (ok)"));
+        Client verification = clientRepo.getClient(1);
+        System.out.println("ostateczne wydatki michala: " + verification.getMoneySpent() + " -> ma byc: " + michalBefore);
+
+        System.out.println("\nhistoria zakupów michala:");
+        List<Sale> zakupyMichal = saleRepo.getClientSales(1);
+
+        for (Sale paragon : zakupyMichal) {
+            System.out.println("Paragon ID: " + paragon.getId() + ", kupiono roslin: " + paragon.getPlants().size());
+        }
     }
 }

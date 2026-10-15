@@ -1,5 +1,6 @@
 package database.repositories;
 
+import database.DatabaseManager;
 import database.entities.ClientEnt;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -11,7 +12,7 @@ public class JpaClientRepository {
     private EntityManagerFactory emf;
 
     public JpaClientRepository() {
-        this.emf = database.DatabaseManager.getEmf();
+        this.emf = DatabaseManager.getEmf();
     }
 
     public ClientEnt getClient(int id) {

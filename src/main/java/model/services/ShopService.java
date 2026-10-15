@@ -21,6 +21,9 @@ public class ShopService {
 
         double cost = 0.0;
         for (Plant plant : plants) {
+            if(plant.isSold()) {
+                return false;
+            }
             plant.setSold(true);
             cost += plant.getCost();
         }
