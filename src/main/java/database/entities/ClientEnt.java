@@ -11,6 +11,9 @@ public class ClientEnt {
     private double moneySpent;
     private boolean member;
 
+    @Version
+    private int version;
+
     public ClientEnt() {}
 
     public int getId() {

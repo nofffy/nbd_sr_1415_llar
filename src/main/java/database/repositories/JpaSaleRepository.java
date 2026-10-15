@@ -20,7 +20,11 @@ public class JpaSaleRepository {
     public SaleEnt getSale(int id) {
         String query = "SELECT p FROM SaleEnt p JOIN FETCH p.plants WHERE p.id = :id";
         try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery(query, SaleEnt.class).setParameter("id", id).getSingleResult();
+            try {
+                return em.createQuery(query, SaleEnt.class).setParameter("id", id).getSingleResult();
+            } catch (NoResultException e) {
+                return null;
+            }
         }
     }
 

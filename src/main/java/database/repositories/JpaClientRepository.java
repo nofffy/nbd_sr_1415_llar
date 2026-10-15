@@ -39,7 +39,13 @@ public class JpaClientRepository {
     }
 
     public void updateClient(ClientEnt ent, EntityManager em) {
-        em.merge(ent);
+        ClientEnt dbClient = em.find(ClientEnt.class, ent.getId());
+        if (dbClient == null) {
+            throw new jakarta.persistence.OptimisticLockException("Klient został zmodyfikowany");
+        }
+        dbClient.setName(ent.getName());
+        dbClient.setMoneySpent(ent.getMoneySpent());
+        dbClient.setMember(ent.isMember());
     }
 
     public boolean updateClient(ClientEnt ent) {
@@ -47,7 +53,10 @@ public class JpaClientRepository {
             EntityTransaction txn = em.getTransaction();
             try {
                 txn.begin();
-                em.merge(ent);
+                ClientEnt dbClient = em.find(ClientEnt.class, ent.getId());
+                dbClient.setName(ent.getName());
+                dbClient.setMoneySpent(ent.getMoneySpent());
+                dbClient.setMember(ent.isMember());
                 txn.commit();
                 return true;
             } catch (Exception e) {

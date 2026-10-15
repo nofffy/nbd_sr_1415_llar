@@ -101,11 +101,26 @@ public class JpaPlantRepository {
     }
 
     public void updatePlant(PlantEnt ent, EntityManager em) {
-        PlantEnt plantent = em.find(PlantEnt.class, ent.getId());
-        if (plantent == null || plantent.isSold()) {
+        PlantEnt dbPlant = em.find(PlantEnt.class, ent.getId());
+        if (dbPlant == null || dbPlant.isSold()) {
             throw new jakarta.persistence.OptimisticLockException("Roslina jest juz sprzedana");
         }
-        plantent.setSold(ent.isSold());
+        dbPlant.setName(ent.getName());
+        dbPlant.setColor(ent.getColor());
+        dbPlant.setCost(ent.getCost());
+        dbPlant.setSold(ent.isSold());
+        if (dbPlant instanceof SucculentEnt dbSucculent) {
+            SucculentEnt MainEnt = (SucculentEnt) ent;
+            dbSucculent.setSpiky(MainEnt.isSpiky());
+        }
+        else if (dbPlant instanceof CarnivorousEnt dbCarnivorous) {
+            CarnivorousEnt MainEnt = (CarnivorousEnt) ent;
+            dbCarnivorous.setFavouriteFood(MainEnt.getFavouriteFood());
+        }
+        else if (dbPlant instanceof MonsteraEnt dbMonstera) {
+            MonsteraEnt MainEnt = (MonsteraEnt) ent;
+            dbMonstera.setLeafSize(MainEnt.getLeafSize());
+        }
     }
 
     public boolean addPlants(List<PlantEnt> ents) {
