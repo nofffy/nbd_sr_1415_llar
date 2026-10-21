@@ -1,6 +1,6 @@
-package database.mappers;
+package database.mappers.Jpa;
 
-import database.entities.ClientEnt;
+import database.entities.Jpa.ClientEnt;
 import model.Client;
 
 public class JpaClientMapper {

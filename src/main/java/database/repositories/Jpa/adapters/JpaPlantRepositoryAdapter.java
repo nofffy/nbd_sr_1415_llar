@@ -1,10 +1,11 @@
-package database.repositories.adapters;
+package database.repositories.Jpa.adapters;
 
-import database.entities.PlantEnt;
-import database.mappers.JpaPlantMapper;
-import database.repositories.JpaPlantRepository;
+import database.entities.Jpa.*;
+import database.mappers.Jpa.JpaPlantMapper;
+import database.repositories.Jpa.JpaPlantRepository;
 import model.Plant;
 import model.repositories.PlantRepository;
+import model.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,5 +86,26 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
     @Override
     public List<Plant> findAllSold() {
         return findAllSoldOrNot(true);
+    }
+
+    @Override
+    public int countSoldPlantsByType(Class<?> modelClass) {
+        Class<? extends PlantEnt> entClass = null;
+
+        if (modelClass == Basic.class) {
+            entClass = BasicEnt.class;
+        } else if (modelClass == Monstera.class) {
+            entClass = MonsteraEnt.class;
+        } else if (modelClass == Carnivorous.class) {
+            entClass = CarnivorousEnt.class;
+        } else if (modelClass == Succulent.class) {
+            entClass = SucculentEnt.class;
+        }
+
+        if (entClass == null) {
+            return 0;
+        }
+
+        return repo.countSoldPlantsByType(entClass);
     }
 }

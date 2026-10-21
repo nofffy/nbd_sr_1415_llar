@@ -1,6 +1,6 @@
-package database.mappers;
+package database.mappers.Jpa;
 
-import database.entities.*;
+import database.entities.Jpa.*;
 import model.Plant;
 import model.PlantType;
 import model.types.Basic;

@@ -1,8 +1,8 @@
-package database.repositories.adapters;
+package database.repositories.Jpa.adapters;
 
-import database.entities.SaleEnt;
-import database.mappers.JpaSaleMapper;
-import database.repositories.JpaSaleRepository;
+import database.entities.Jpa.SaleEnt;
+import database.mappers.Jpa.JpaSaleMapper;
+import database.repositories.Jpa.JpaSaleRepository;
 import model.Sale;
 import model.repositories.SaleRepository;
 

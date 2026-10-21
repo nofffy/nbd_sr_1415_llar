@@ -1,4 +1,4 @@
-package database.entities;
+package database.entities.Jpa;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

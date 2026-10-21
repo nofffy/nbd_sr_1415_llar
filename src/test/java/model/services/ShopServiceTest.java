@@ -1,16 +1,15 @@
 package model.services;
 
 import database.MockDatabaseManager;
-import database.repositories.adapters.JpaClientRepositoryAdapter;
-import database.repositories.adapters.JpaPlantRepositoryAdapter;
-import database.repositories.adapters.JpaSaleRepositoryAdapter;
+import database.repositories.Jpa.adapters.JpaClientRepositoryAdapter;
+import database.repositories.Jpa.adapters.JpaPlantRepositoryAdapter;
+import database.repositories.Jpa.adapters.JpaSaleRepositoryAdapter;
 import model.Client;
 import model.Plant;
 import model.Sale;
 import model.repositories.ClientRepository;
 import model.repositories.PlantRepository;
 import model.repositories.SaleRepository;
-import model.services.ShopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

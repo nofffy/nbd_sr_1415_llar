@@ -1,7 +1,7 @@
-package database.mappers;
+package database.mappers.Jpa;
 
-import database.entities.PlantEnt;
-import database.entities.SaleEnt;
+import database.entities.Jpa.PlantEnt;
+import database.entities.Jpa.SaleEnt;
 import model.Plant;
 import model.Sale;
 

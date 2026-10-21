@@ -15,4 +15,5 @@ public interface PlantRepository {
 
     List<Plant> findAllUnsold();
     List<Plant> findAllSold();
+    int countSoldPlantsByType(Class<?> plantType);
 }

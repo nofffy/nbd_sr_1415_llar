@@ -1,9 +1,8 @@
-package database.repositories.adapters;
+package database.repositories.Jpa.adapters;
 
-import database.entities.ClientEnt;
-import database.mappers.JpaClientMapper;
-import database.repositories.JpaClientRepository;
-import jakarta.persistence.EntityManager;
+import database.entities.Jpa.ClientEnt;
+import database.mappers.Jpa.JpaClientMapper;
+import database.repositories.Jpa.JpaClientRepository;
 import model.Client;
 import model.repositories.ClientRepository;
 

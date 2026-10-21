@@ -1,6 +1,6 @@
-import database.repositories.adapters.JpaClientRepositoryAdapter;
-import database.repositories.adapters.JpaPlantRepositoryAdapter;
-import database.repositories.adapters.JpaSaleRepositoryAdapter;
+import database.repositories.Jpa.adapters.JpaClientRepositoryAdapter;
+import database.repositories.Jpa.adapters.JpaPlantRepositoryAdapter;
+import database.repositories.Jpa.adapters.JpaSaleRepositoryAdapter;
 import model.Client;
 import model.Plant;
 import model.Sale;

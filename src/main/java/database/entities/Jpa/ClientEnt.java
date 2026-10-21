@@ -1,0 +1,62 @@
+package database.entities.Jpa;
+
+import jakarta.persistence.*;
+
+@Entity
+public class ClientEnt {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
+    private double moneySpent;
+    private boolean member;
+
+    @Version
+    private int version;
+
+    public ClientEnt() {}
+
+    public ClientEnt(int id, String name, double moneySpent, boolean member, int version) {
+        this.id = id;
+        this.name = name;
+        this.moneySpent = moneySpent;
+        this.member = member;
+        this.version = version;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getMoneySpent() {
+        return moneySpent;
+    }
+
+    public void setMoneySpent(double moneySpent) {
+        this.moneySpent = moneySpent;
+    }
+
+    public boolean isMember() {
+        return member;
+    }
+
+    public void setMember(boolean member) {
+        this.member = member;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+}

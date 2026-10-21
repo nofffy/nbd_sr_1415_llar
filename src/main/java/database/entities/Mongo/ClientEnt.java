@@ -1,34 +1,22 @@
-package database.entities;
+package database.entities.Mongo;
 
-import jakarta.persistence.*;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.types.ObjectId;
 
-@Entity
 public class ClientEnt {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @BsonId
+    private ObjectId id;
     private String name;
     private double moneySpent;
     private boolean member;
 
-    @Version
-    private int version;
-
     public ClientEnt() {}
 
-    public ClientEnt(int id, String name, double moneySpent, boolean member, int version) {
-        this.id = id;
-        this.name = name;
-        this.moneySpent = moneySpent;
-        this.member = member;
-        this.version = version;
-    }
-
-    public int getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
@@ -54,9 +42,5 @@ public class ClientEnt {
 
     public void setMember(boolean member) {
         this.member = member;
-    }
-
-    public int getVersion() {
-        return version;
     }
 }
