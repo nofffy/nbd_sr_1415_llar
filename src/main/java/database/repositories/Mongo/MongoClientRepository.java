@@ -5,15 +5,19 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.UpdateResult;
 import database.entities.Mongo.ClientEnt;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.mongodb.client.model.Filters.eq;
 
 public class MongoClientRepository {
-    private MongoCollection<ClientEnt> collection;
+    private final MongoCollection<ClientEnt> collection;
 
     public MongoClientRepository(MongoDatabase database) {
         MongoDatabase mongoDatabase = database;
@@ -33,13 +37,13 @@ public class MongoClientRepository {
         }
     }
 
-    public boolean updateClient(ClientEnt ent) {
+    public boolean updateClient(ClientEnt client) {
         try {
-            Bson filter = Filters.eq("_id", ent.getId());
+            Bson filter = Filters.eq("_id", client.getId());
             Bson update = Updates.combine(
-                    Updates.set("name", ent.getName()),
-                    Updates.set("moneySpent", ent.getMoneySpent()),
-                    Updates.set("member", ent.isMember()));
+                    Updates.set("name", client.getName()),
+                    Updates.set("moneySpent", client.getMoneySpent()),
+                    Updates.set("member", client.isMember()));
             UpdateResult result = collection.updateOne(filter, update);
             return result.getMatchedCount() > 0;
         } catch (Exception e) {
@@ -54,6 +58,31 @@ public class MongoClientRepository {
             return result.getDeletedCount() > 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public boolean addClients(List<ClientEnt> clients) {
+        try {
+            InsertManyResult result = collection.insertMany(clients);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public List<ClientEnt> getClients() {
+        try {
+            return collection.find().into(new ArrayList<>());
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public int countClients() {
+        try {
+            return (int) collection.countDocuments();
+        } catch (Exception e) {
+            return 0;
         }
     }
 }
