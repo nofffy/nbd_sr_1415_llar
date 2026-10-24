@@ -3,7 +3,7 @@ package database;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-public class MockDatabaseManager {
+public class JpaMockDatabaseManager {
 
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 

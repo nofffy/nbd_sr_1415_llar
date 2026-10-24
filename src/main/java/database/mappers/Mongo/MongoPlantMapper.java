@@ -17,7 +17,7 @@ public class MongoPlantMapper {
         }
 
         PlantEnt ent = new PlantEnt();
-        if (plant.getId() != null && !plant.getId().isEmpty()) {
+        if (plant.getId() != null && ObjectId.isValid(plant.getId())) {
             ent.setId(new ObjectId(plant.getId()));
         }
         ent.setName(plant.getName());

@@ -104,7 +104,7 @@ public class MongoPlantRepository {
 
     public int countSoldPlantsByType(String type) {
         Bson filter = Filters.and(
-                Filters.eq("plantType.type", type),
+                Filters.eq("plantType.type", type.toUpperCase()),
                 Filters.eq("sold", true)
         );
         try {

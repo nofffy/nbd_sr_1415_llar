@@ -11,7 +11,7 @@ public class MongoClientMapper {
         }
 
         ClientEnt ent = new ClientEnt();
-        if (client.getId() != null && !client.getId().isEmpty()) {
+        if (client.getId() != null && ObjectId.isValid(client.getId())) {
             ent.setId(new ObjectId(client.getId()));
         }
         ent.setName(client.getName());

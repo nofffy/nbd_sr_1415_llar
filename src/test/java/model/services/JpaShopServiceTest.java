@@ -1,6 +1,6 @@
 package model.services;
 
-import database.MockDatabaseManager;
+import database.JpaMockDatabaseManager;
 import database.repositories.Jpa.adapters.JpaClientRepositoryAdapter;
 import database.repositories.Jpa.adapters.JpaPlantRepositoryAdapter;
 import database.repositories.Jpa.adapters.JpaSaleRepositoryAdapter;
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ShopSystemTest {
+class JpaShopServiceTest {
 
     private PlantRepository plantRepo;
     private ClientRepository clientRepo;
@@ -30,7 +30,7 @@ class ShopSystemTest {
     @BeforeEach
     void setUp() {
         // Reset bazy danych przed każdym testem gwarantuje 100% niezależności
-        MockDatabaseManager.reset();
+        JpaMockDatabaseManager.reset();
 
         plantRepo = new JpaPlantRepositoryAdapter();
         clientRepo = new JpaClientRepositoryAdapter();

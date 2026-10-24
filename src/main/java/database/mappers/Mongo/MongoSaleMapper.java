@@ -13,10 +13,10 @@ public class MongoSaleMapper {
         if (sale == null) return null;
 
         SaleEnt ent = new SaleEnt();
-        if (sale.getId() != null && !sale.getId().isEmpty()) {
+        if (sale.getId() != null && ObjectId.isValid(sale.getId())) {
             ent.setId(new ObjectId(sale.getId()));
         }
-        if (sale.getClient().getId() != null && !sale.getClient().getId().isEmpty()) {
+        if (sale.getClient() != null && sale.getClient().getId() != null && ObjectId.isValid(sale.getClient().getId())) {
             ent.setClientId(new ObjectId(sale.getClient().getId()));
         }
         ent.setTimeOfSale(sale.getTimeOfSale());

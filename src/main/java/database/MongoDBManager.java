@@ -20,13 +20,15 @@ public class MongoDBManager {
     static {
         CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
         CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/");
+
+        String uri = "mongodb://admin:adminpassword@mongodb1:27017,mongodb2:27018,mongodb3:27019/?authSource=admin&replicaSet=replica_set_single";
+        ConnectionString connectionString = new ConnectionString(uri);
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .codecRegistry(pojoCodecRegistry)
                 .build();
         mongoClient = MongoClients.create(settings);
-        database = mongoClient.getDatabase("nbddb");
+        database = mongoClient.getDatabase("plantshop");
     }
 
     public static MongoDatabase getDatabase() {

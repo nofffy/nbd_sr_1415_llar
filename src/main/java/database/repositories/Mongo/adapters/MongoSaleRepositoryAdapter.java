@@ -30,9 +30,7 @@ public class MongoSaleRepositoryAdapter implements SaleRepository {
         if (saleEnt == null) {
             return null;
         }
-
-        ClientEnt clientEnt = clientRepo.getClient(saleEnt.getClientId());
-        Client client = MongoClientMapper.EntToObj(clientEnt);
+        Client client = MongoClientMapper.EntToObj(clientRepo.getClient(saleEnt.getClientId()));
         return MongoSaleMapper.EntToObj(saleEnt, client);
     }
 
@@ -40,7 +38,15 @@ public class MongoSaleRepositoryAdapter implements SaleRepository {
     public boolean addSale(Sale sale) {
         SaleEnt saleEnt = MongoSaleMapper.ObjToEnt(sale);
         ClientEnt clientEnt = MongoClientMapper.ObjToEnt(sale.getClient());
-        return repo.addSale(saleEnt, clientEnt);
+        if (saleEnt == null || clientEnt == null) {
+            return false;
+        }
+
+        boolean result = repo.addSale(saleEnt, clientEnt);
+        if (result) {
+            sale.setId(saleEnt.getId().toHexString());
+        }
+        return result;
     }
 
     @Override

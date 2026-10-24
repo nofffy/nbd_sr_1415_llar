@@ -76,7 +76,7 @@ public class MongoClientRepository {
     public boolean addClients(List<ClientEnt> clients) {
         try {
             InsertManyResult result = collection.insertMany(clients);
-            return true;
+            return result.wasAcknowledged();
         } catch (Exception e) {
             return false;
         }
