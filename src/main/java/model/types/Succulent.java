@@ -19,7 +19,5 @@ public class Succulent implements PlantType {
     }
 
     @Override
-    public String getInfo() {
-        return "Succulent plant, is " + (spiky ? "":"not") + " spiky";
-    }
+    public String getInfo() { return "SUCCULENT"; }
 }

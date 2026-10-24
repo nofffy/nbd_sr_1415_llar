@@ -12,7 +12,10 @@ public class JpaPlantMapper {
     public static PlantEnt ObjToEnt(Plant plant) {
         if (plant == null) return null;
 
-        int id = plant.getId();
+        int id = 0;
+        if (plant.getId() != null && !plant.getId().isEmpty()) {
+            id = Integer.parseInt(plant.getId());
+        }
         String name = plant.getName();
         String color = plant.getColor();
         double cost = plant.getCost();
@@ -67,8 +70,9 @@ public class JpaPlantMapper {
         else {
             return null;
         }
+        String idString = String.valueOf(plantEnt.getId());
         return new Plant(
-                plantEnt.getId(),
+                idString,
                 plantEnt.getName(),
                 plantEnt.getColor(),
                 plantEnt.getCost(),

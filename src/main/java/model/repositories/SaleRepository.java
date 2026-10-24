@@ -5,10 +5,10 @@ import model.Sale;
 import java.util.List;
 
 public interface SaleRepository {
-    Sale getSale(int id);
+    Sale getSale(String id);
     boolean addSale(Sale sale);
-    boolean removeSale(int id);
+    boolean removeSale(String id);
 
-    List<Sale> getClientSales(int clientId);
+    List<Sale> getClientSales(String clientId);
     int sizeSales();
 }

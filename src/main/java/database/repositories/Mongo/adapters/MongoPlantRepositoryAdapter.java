@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MongoPlantRepositoryAdapter implements PlantRepository {
     @Override
-    public Plant getPlant(int id) {
+    public Plant getPlant(String id) {
 
     }
 
@@ -17,7 +17,7 @@ public class MongoPlantRepositoryAdapter implements PlantRepository {
     }
 
     @Override
-    public boolean removePlant(int id) {
+    public boolean removePlant(String id) {
 
     }
 

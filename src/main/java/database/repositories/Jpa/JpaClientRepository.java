@@ -15,7 +15,7 @@ public class JpaClientRepository {
         this.emf = JpaDBManager.getEmf();
     }
 
-    public ClientEnt getClient(int id) {
+    public ClientEnt getClient(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(ClientEnt.class, id);
         }
@@ -65,7 +65,7 @@ public class JpaClientRepository {
         }
     }
 
-    public boolean removeClient(int id) {
+    public boolean removeClient(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {

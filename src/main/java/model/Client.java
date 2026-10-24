@@ -1,21 +1,13 @@
 package model;
 
 public class Client {
-    private int id;
+    private String id;
     private String name;
     private double moneySpent;
     private boolean member;
     private final int version;
 
-    public Client(int id, String name, double moneySpent, boolean member) {
-        this.id = id;
-        this.name = name;
-        this.moneySpent = moneySpent;
-        this.member = member;
-        this.version = 0;
-    }
-
-    public Client(int id, String name, double moneySpent, boolean member, int version) {
+    public Client(String id, String name, double moneySpent, boolean member, int version) {
         this.id = id;
         this.name = name;
         this.moneySpent = moneySpent;
@@ -23,19 +15,27 @@ public class Client {
         this.version = version;
     }
 
+    public Client(String id, String name, double moneySpent, boolean member) {
+        this.id = id;
+        this.name = name;
+        this.moneySpent = moneySpent;
+        this.member = member;
+        this.version = 0;
+    }
+
     public Client(String name) {
-        this.id = 0;
+        this.id = "0";
         this.name = name;
         this.moneySpent = 0;
         this.member = false;
         this.version = 0;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

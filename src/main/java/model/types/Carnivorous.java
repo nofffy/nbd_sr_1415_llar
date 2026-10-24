@@ -29,6 +29,6 @@ public class Carnivorous implements PlantType {
 
     @Override
     public String getInfo() {
-        return "Carnivorous plant, favourite food: "+favouriteFood;
+        return "CARNIVOROUS";
     }
 }

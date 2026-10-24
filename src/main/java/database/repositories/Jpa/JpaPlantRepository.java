@@ -18,7 +18,7 @@ public class JpaPlantRepository {
         this.emf = JpaDBManager.getEmf();
     }
 
-    public PlantEnt getPlant(int id) {
+    public PlantEnt getPlant(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(PlantEnt.class, id);
         }
@@ -41,7 +41,7 @@ public class JpaPlantRepository {
         }
     }
 
-    public boolean removePlant(int id) {
+    public boolean removePlant(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {

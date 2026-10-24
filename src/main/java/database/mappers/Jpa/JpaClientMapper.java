@@ -5,17 +5,22 @@ import model.Client;
 
 public class JpaClientMapper {
     public static ClientEnt ObjToEnt(Client client) {
+        int id = 0;
+        if (client.getId() != null && !client.getId().isEmpty()) {
+            id = Integer.parseInt(client.getId());
+        }
         return new ClientEnt(
-                client.getId(),
+                id,
                 client.getName(),
                 client.getMoneySpent(),
                 client.isMember(),
                 client.getVersion());
     }
 
-    public static Client EntToObj(ClientEnt clientEnt){
+    public static Client EntToObj(ClientEnt clientEnt) {
+        String idString = String.valueOf(clientEnt.getId());
         return new Client(
-                clientEnt.getId(),
+                idString,
                 clientEnt.getName(),
                 clientEnt.getMoneySpent(),
                 clientEnt.isMember(),

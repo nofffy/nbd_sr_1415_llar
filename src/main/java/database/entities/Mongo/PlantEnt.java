@@ -1,17 +1,16 @@
 package database.entities.Mongo;
 
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
-@BsonDiscriminator(key = "plantType")
-public abstract class PlantEnt {
+public class PlantEnt {
     @BsonId
     private ObjectId id;
     private String name;
     private String color;
     private double cost;
     private boolean sold;
+    private PlantTypeEnt type;
     private ObjectId sale;
 
     public PlantEnt() {}
@@ -56,9 +55,11 @@ public abstract class PlantEnt {
         this.sold = sold;
     }
 
-    public ObjectId getSale() {
-        return sale;
-    }
+    public PlantTypeEnt getType() { return type; }
+
+    public void setType(PlantTypeEnt type) { this.type = type; }
+
+    public ObjectId getSale() { return sale; }
 
     public void setSale(ObjectId sale) {
         this.sale = sale;

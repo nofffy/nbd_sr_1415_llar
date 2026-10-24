@@ -12,7 +12,5 @@ public class Basic implements PlantType {
     }
 
     @Override
-    public String getInfo() {
-        return "Normal plant";
-    }
+    public String getInfo() { return "BASIC"; }
 }

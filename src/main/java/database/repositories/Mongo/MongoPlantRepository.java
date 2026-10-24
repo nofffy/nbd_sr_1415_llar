@@ -1,5 +1,6 @@
 package database.repositories.Mongo;
 
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -7,9 +8,6 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.UpdateResult;
-import database.entities.Mongo.CarnivorousEnt;
-import database.entities.Mongo.MonsteraEnt;
-import database.entities.Mongo.SucculentEnt;
 import database.entities.Mongo.PlantEnt;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -17,17 +15,14 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
-
 public class MongoPlantRepository {
     private final MongoCollection<PlantEnt> collection;
 
     public MongoPlantRepository(MongoDatabase database) {
-        MongoDatabase mongoDatabase = database;
         this.collection = database.getCollection("plants", PlantEnt.class);
     }
 
-    public PlantEnt getPlant(ObjectId id) { return collection.find(eq("_id", id)).first(); }
+    public PlantEnt getPlant(ObjectId id) { return collection.find(Filters.eq("_id", id)).first(); }
 
     public boolean addPlant(PlantEnt plant) {
         try {
@@ -40,7 +35,7 @@ public class MongoPlantRepository {
 
     public boolean removePlant(ObjectId id) {
         try {
-            Bson filter = eq("_id", id);
+            Bson filter = Filters.eq("_id", id);
             DeleteResult result = collection.deleteOne(filter);
             return result.getDeletedCount() > 0;
         } catch (Exception e) {
@@ -51,26 +46,32 @@ public class MongoPlantRepository {
     public boolean updatePlant(PlantEnt plant) {
         try {
             Bson filter = Filters.eq("_id", plant.getId());
-            List<Bson> updatesList = new ArrayList<>();
-            updatesList.add(Updates.set("name", plant.getName()));
-            updatesList.add(Updates.set("color", plant.getColor()));
-            updatesList.add(Updates.set("cost", plant.getCost()));
-            updatesList.add(Updates.set("sold", plant.isSold()));
-            updatesList.add(Updates.set("sale", plant.getSale()));
-            if (plant instanceof SucculentEnt succulent) {
-                updatesList.add(Updates.set("spiky", succulent.isSpiky()));
-            }
-            else if (plant instanceof CarnivorousEnt carnivorous) {
-                updatesList.add(Updates.set("favouriteFood", carnivorous.getFavouriteFood()));
-            }
-            else if (plant instanceof MonsteraEnt monstera) {
-                updatesList.add(Updates.set("leafSize", monstera.getLeafSize()));
-            }
-            Bson update = Updates.combine(updatesList);
+            Bson update = Updates.combine(
+                    Updates.set("name", plant.getName()),
+                    Updates.set("color", plant.getColor()),
+                    Updates.set("cost", plant.getCost()),
+                    Updates.set("sold", plant.isSold()),
+                    Updates.set("sale", plant.getSale()),
+                    Updates.set("plantType", plant.getType())
+            );
             UpdateResult result = collection.updateOne(filter, update);
             return result.getMatchedCount() > 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public void sellPlant(ClientSession session, PlantEnt ent) {
+        Bson filter = Filters.and(
+                Filters.eq("_id", ent.getId()),
+                Filters.eq("sold", false)
+        );
+
+        Bson update = Updates.set("sold", true);
+        UpdateResult result = collection.updateOne(session, filter, update);
+
+        if (result.getMatchedCount() == 0) {
+            throw new RuntimeException("Roslina jest juz sprzedana");
         }
     }
 
@@ -92,22 +93,24 @@ public class MongoPlantRepository {
     }
 
     public List<PlantEnt> findAllSoldOrNot(boolean choice) {
-        Bson query;
-        if(choice) {
-            query = eq("sold", true);
-        } else {
-            query = eq("sold", false);
-        }
+        Bson filter = Filters.eq("sold", choice);
 
         try {
-            return collection.find().into(new ArrayList<>());
+            return collection.find(filter).into(new ArrayList<>());
         } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
-    public int countSoldPlantsByType() {
-        //TODO
-        return 0;
+    public int countSoldPlantsByType(String type) {
+        Bson filter = Filters.and(
+                Filters.eq("plantType.type", type),
+                Filters.eq("sold", true)
+        );
+        try {
+            return (int) collection.countDocuments(filter);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

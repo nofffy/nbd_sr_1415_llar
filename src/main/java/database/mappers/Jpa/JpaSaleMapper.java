@@ -11,7 +11,11 @@ import java.util.List;
 public class JpaSaleMapper {
     public static SaleEnt ObjToEnt(Sale sale) {
         SaleEnt ent = new SaleEnt();
-        ent.setId(sale.getId());
+        int id = 0;
+        if (sale.getId() != null && !sale.getId().isEmpty()) {
+            id = Integer.parseInt(sale.getId());
+        }
+        ent.setId(id);
         ent.setClient(JpaClientMapper.ObjToEnt(sale.getClient()));
         ent.setTimeOfSale(sale.getTimeOfSale());
         if (sale.getPlants() != null) {
@@ -29,8 +33,9 @@ public class JpaSaleMapper {
                 list.add(JpaPlantMapper.EntToObj(plantEnt));
             }
         }
+        String idString = String.valueOf(saleEnt.getId());
         return new Sale(
-                saleEnt.getId(),
+                idString,
                 JpaClientMapper.EntToObj(saleEnt.getClient()),
                 list,
                 saleEnt.getTimeOfSale()

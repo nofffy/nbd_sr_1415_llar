@@ -9,27 +9,27 @@ import java.util.List;
 
 public class SaleEnt {
     @BsonId
-    private int id;
-    private ObjectId client;
+    private ObjectId id;
+    private ObjectId clientId; //tu dajemy id bo client moze np zmienic mail, wiec to powinno sie zmienic wszedzie
     private LocalDateTime timeOfSale;
-    private List<PlantEnt> plants = new ArrayList<>();
+    private List<PlantEnt> plants = new ArrayList<>(); //tu dajemy cale obiekty bo moga sie zmienic, np cena kiedys byla 100 a teraz jest 200, w sale nadal powinno byc 100
 
     public SaleEnt() {}
 
-    public int getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
-    public ObjectId getClient() {
-        return client;
+    public ObjectId getClientId() {
+        return clientId;
     }
 
-    public void setClient(ObjectId client) {
-        this.client = client;
+    public void setClientId(ObjectId clientId) {
+        this.clientId = clientId;
     }
 
     public LocalDateTime getTimeOfSale() {

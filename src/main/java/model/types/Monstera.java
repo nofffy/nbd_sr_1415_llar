@@ -34,8 +34,5 @@ public class Monstera implements PlantType {
     }
 
     @Override
-    public String getInfo() {
-        return "Monstera plant, leaf size: "+leafSize;
-    }
-
+    public String getInfo() { return "MONSTERA";}
 }

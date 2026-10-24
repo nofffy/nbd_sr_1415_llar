@@ -1,5 +1,6 @@
 package database.repositories.Mongo;
 
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -14,18 +15,15 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
-
 public class MongoClientRepository {
     private final MongoCollection<ClientEnt> collection;
 
     public MongoClientRepository(MongoDatabase database) {
-        MongoDatabase mongoDatabase = database;
         this.collection = database.getCollection("clients", ClientEnt.class);
     }
 
     public ClientEnt getClient(ObjectId id) {
-        return collection.find(eq("_id", id)).first();
+        return collection.find(Filters.eq("_id", id)).first();
     }
 
     public boolean addClient(ClientEnt client) {
@@ -51,9 +49,23 @@ public class MongoClientRepository {
         }
     }
 
+    public boolean updateClient(ClientSession session, ClientEnt client) { //to do addSale!!! cala transakcja atomowa
+        try {
+            Bson filter = Filters.eq("_id", client.getId());
+            Bson update = Updates.combine(
+                    Updates.set("name", client.getName()),
+                    Updates.set("moneySpent", client.getMoneySpent()),
+                    Updates.set("member", client.isMember()));
+            UpdateResult result = collection.updateOne(session, filter, update);
+            return result.getMatchedCount() > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public boolean removeClient(ObjectId id) {
         try {
-            Bson filter = eq("_id", id);
+            Bson filter = Filters.eq("_id", id);
             DeleteResult result = collection.deleteOne(filter);
             return result.getDeletedCount() > 0;
         } catch (Exception e) {

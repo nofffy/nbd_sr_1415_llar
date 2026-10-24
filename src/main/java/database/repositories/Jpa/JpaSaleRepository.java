@@ -18,7 +18,7 @@ public class JpaSaleRepository {
         this.plantRepo = new JpaPlantRepository();
     }
 
-    public SaleEnt getSale(int id) {
+    public SaleEnt getSale(String id) {
         String query = "SELECT p FROM SaleEnt p JOIN FETCH p.plants WHERE p.id = :id";
         try (EntityManager em = emf.createEntityManager()) {
             try {
@@ -56,7 +56,7 @@ public class JpaSaleRepository {
         }
     }
 
-    public boolean removeSale(int id) {
+    public boolean removeSale(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             EntityTransaction txn = em.getTransaction();
             try {
@@ -79,7 +79,7 @@ public class JpaSaleRepository {
         }
     }
 
-    public List<SaleEnt> getClientSales(int clientId) {
+    public List<SaleEnt> getClientSales(String clientId) {
         String query = "SELECT DISTINCT s FROM SaleEnt s JOIN FETCH s.plants WHERE s.client.id = :clientId";
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery(query, SaleEnt.class)

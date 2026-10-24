@@ -4,30 +4,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Sale {
-    private int id;
+    private String id;
     private Client client;
     private List<Plant> plants;
     private LocalDateTime timeOfSale;
 
     public Sale(Client client, List<Plant> plants) {
-        this.id = 0;
+        this.id = "0";
         this.client = client;
         this.plants = plants;
         this.timeOfSale = LocalDateTime.now();
     }
 
-    public Sale(int id, Client client, List<Plant> plants, LocalDateTime timeOfSale) {
+    public Sale(String id, Client client, List<Plant> plants, LocalDateTime timeOfSale) {
         this.id = id;
         this.client = client;
         this.plants = plants;
         this.timeOfSale = timeOfSale;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

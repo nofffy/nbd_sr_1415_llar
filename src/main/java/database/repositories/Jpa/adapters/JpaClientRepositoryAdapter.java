@@ -17,7 +17,7 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
     }
 
     @Override
-    public Client getClient(int id) {
+    public Client getClient(String id) {
         ClientEnt ent = repo.getClient(id);
         if (ent == null) {
             return null;
@@ -30,7 +30,7 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         ClientEnt ent = JpaClientMapper.ObjToEnt(client);
         boolean result = repo.addClient(ent);
         if (result) {
-            client.setId(ent.getId());
+            client.setId(String.valueOf(ent.getId()));
         }
         return result;
     }
@@ -42,7 +42,7 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
     }
 
     @Override
-    public boolean removeClient(int id) {
+    public boolean removeClient(String id) {
         return repo.removeClient(id);
     }
 

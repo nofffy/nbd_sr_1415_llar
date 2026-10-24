@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MongoClientRepositoryAdapter implements ClientRepository {
     @Override
-    public Client getClient(int id) {
+    public Client getClient(String id) {
 
     }
 
@@ -22,7 +22,7 @@ public class MongoClientRepositoryAdapter implements ClientRepository {
     }
 
     @Override
-    public boolean removeClient(int id) {
+    public boolean removeClient(String id) {
 
     }
 

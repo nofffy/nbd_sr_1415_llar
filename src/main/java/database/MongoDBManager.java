@@ -32,4 +32,8 @@ public class MongoDBManager {
     public static MongoDatabase getDatabase() {
         return database;
     }
+
+    public static MongoClient getClient() {
+        return mongoClient;
+    }
 }

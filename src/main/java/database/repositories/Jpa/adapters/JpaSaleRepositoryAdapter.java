@@ -17,7 +17,7 @@ public class JpaSaleRepositoryAdapter implements SaleRepository {
     }
 
     @Override
-    public Sale getSale(int id) {
+    public Sale getSale(String id) {
         SaleEnt ent = repo.getSale(id);
         if (ent == null) {
             return null;
@@ -32,12 +32,12 @@ public class JpaSaleRepositoryAdapter implements SaleRepository {
     }
 
     @Override
-    public boolean removeSale(int id) {
+    public boolean removeSale(String id) {
         return repo.removeSale(id);
     }
 
     @Override
-    public List<Sale> getClientSales(int clientId) {
+    public List<Sale> getClientSales(String clientId) {
         List<SaleEnt> list = repo.getClientSales(clientId);
         List<Sale> sales = new ArrayList<>();
         for (SaleEnt ent : list) {

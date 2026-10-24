@@ -5,10 +5,10 @@ import model.Client;
 import java.util.List;
 
 public interface ClientRepository {
-    Client getClient(int id);
+    Client getClient(String id);
     boolean addClient(Client client);
     boolean updateClient(Client client);
-    boolean removeClient(int id);
+    boolean removeClient(String id);
 
     boolean addClients(List<Client> clients);
     List<Client> getClients();

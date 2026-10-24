@@ -18,7 +18,7 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
     }
 
     @Override
-    public Plant getPlant(int id) {
+    public Plant getPlant(String id) {
         PlantEnt ent = repo.getPlant(id);
         if (ent == null) {
             return null;
@@ -34,13 +34,13 @@ public class JpaPlantRepositoryAdapter implements PlantRepository {
         }
         boolean result = repo.addPlant(ent);
         if (result) {
-            plant.setId(ent.getId());
+            plant.setId(String.valueOf(ent.getId()));
         }
         return result;
     }
 
     @Override
-    public boolean removePlant(int id) {
+    public boolean removePlant(String id) {
         return repo.removePlant(id);
     }
 

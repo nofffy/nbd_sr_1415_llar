@@ -5,9 +5,9 @@ import model.Plant;
 import java.util.List;
 
 public interface PlantRepository {
-    Plant getPlant(int id); //UUID?
+    Plant getPlant(String id); //UUID?
     boolean addPlant(Plant plant);
-    boolean removePlant(int id);
+    boolean removePlant(String id);
     boolean updatePlant(Plant plant);
 
     boolean addPlants(List<Plant> plants);

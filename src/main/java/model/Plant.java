@@ -1,7 +1,7 @@
 package model;
 
 public class Plant {
-    private int id; //UUID??
+    private String id; //UUID??
     private String name;
     private String color;
     private double cost;
@@ -9,17 +9,7 @@ public class Plant {
     private PlantType plantType;
     private final int version;
 
-    public Plant(int id, String name, String color, double cost, boolean sold, PlantType plantType) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.cost = cost;
-        this.sold = sold;
-        this.plantType = plantType;
-        this.version = 0;
-    }
-
-    public Plant(int id, String name, String color, double cost, boolean sold, PlantType plantType, int version) {
+    public Plant(String id, String name, String color, double cost, boolean sold, PlantType plantType, int version) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -29,11 +19,19 @@ public class Plant {
         this.version = version;
     }
 
-    public int getId() {
-        return id;
+    public Plant(String id, String name, String color, double cost, boolean sold, PlantType plantType) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.cost = cost;
+        this.sold = sold;
+        this.plantType = plantType;
+        this.version = 0;
     }
 
-    public void setId(int id) {
+    public String getId() { return id; }
+
+    public void setId(String id) {
         this.id = id;
     }
 
