@@ -33,27 +33,24 @@ class MongoShopServiceTest {
 
     @BeforeEach
     void setUp() {
-        // 1. ZAMIENNIK DLA MockDatabaseManager - Ręczne czyszczenie bazy Mongo
         MongoDatabase db = MongoDBManager.getDatabase();
         db.getCollection("clients").drop();
         db.getCollection("plants").drop();
         db.getCollection("sales").drop();
 
-        // 2. Inicjalizacja adapterów MongoDB
         plantRepo = new MongoPlantRepositoryAdapter(new MongoPlantRepository(db));
         clientRepo = new MongoClientRepositoryAdapter(new MongoClientRepository(db));
-        saleRepo = new MongoSaleRepositoryAdapter(new MongoSaleRepository(db), new MongoClientRepository(db));
+        saleRepo = new MongoSaleRepositoryAdapter(new MongoSaleRepository(db));
         shopService = new ShopService(saleRepo);
 
-        // 3. ZAMIENNIK DLA import.sql - Ręczne dodawanie danych początkowych
         clientRepo.addClient(new Client("Michal"));
         clientRepo.addClient(new Client("Klient 2"));
 
-        Plant p1 = new Plant(); p1.setCost(350.0); p1.setSold(false); // Monstera Variegata
-        Plant p2 = new Plant(); p2.setCost(45.0);  p2.setSold(false); // Muchołówka
-        Plant p3 = new Plant(); p3.setCost(80.0);  p3.setSold(false); // Kaktus Saguaro
-        Plant p4 = new Plant(); p4.setCost(120.0); p4.setSold(false); // Monstera
-        Plant p5 = new Plant(); p5.setCost(50.0);  p5.setSold(false); // Rosiczka
+        Plant p1 = new Plant(); p1.setCost(350.0);
+        Plant p2 = new Plant(); p2.setCost(45.0);
+        Plant p3 = new Plant(); p3.setCost(80.0);
+        Plant p4 = new Plant(); p4.setCost(120.0);
+        Plant p5 = new Plant(); p5.setCost(50.0);
 
         plantRepo.addPlant(p1);
         plantRepo.addPlant(p2);
@@ -75,7 +72,7 @@ class MongoShopServiceTest {
     @DisplayName("2. Edycja i usuwanie klientów oraz roślin")
     void shouldUpdateAndRemoveClientsAndPlants() {
         List<Client> clients = clientRepo.getClients();
-        Client michal = clients.get(0);
+        Client michal = clients.getFirst();
 
         michal.setMember(true);
         michal.setMoneySpent(50.0);
@@ -94,7 +91,6 @@ class MongoShopServiceTest {
         Client klientDoUsuniecia = clients.get(1);
         assertTrue(clientRepo.removeClient(klientDoUsuniecia.getId()), "Usunięcie istniejącego klienta powinno zwrócić true");
 
-        // Dowolny losowy poprawny ObjectId (żeby nie rzuciło wyjątku, ale zwróciło false)
         assertFalse(clientRepo.removeClient("507f1f77bcf86cd799439011"), "Usunięcie nieistniejącego klienta powinno zwrócić false");
         assertEquals(1, clientRepo.sizeClients(), "Po usunięciu powinien zostać 1 klient");
 
@@ -105,8 +101,8 @@ class MongoShopServiceTest {
     @Test
     @DisplayName("3. Walidacja błędnego koszyka")
     void shouldRejectInvalidSaleRequests() {
-        Client michal = clientRepo.getClients().get(0);
-        Plant roslina1 = plantRepo.getPlants().get(0);
+        Client michal = clientRepo.getClients().getFirst();
+        Plant roslina1 = plantRepo.getPlants().getFirst();
 
         assertFalse(shopService.newSale(michal, new ArrayList<>()), "Zakup z pustym koszykiem powinien zostać odrzucony");
         assertFalse(shopService.newSale(null, List.of(roslina1)), "Zakup bez klienta powinien zostać odrzucony");
@@ -116,12 +112,12 @@ class MongoShopServiceTest {
     @DisplayName("4. Normalne zakupy i weryfikacja transakcji w bazie dokumentowej")
     void shouldProcessNormalSalesCorrectly() {
         List<Client> initialClients = clientRepo.getClients();
-        Client kupujacyMichal = initialClients.get(0);
+        Client kupujacyMichal = initialClients.getFirst();
 
         List<Plant> initialPlants = plantRepo.getPlants();
-        Plant roslinaDlaMichal1 = initialPlants.get(0); // 350.0
-        Plant roslinaDlaMichal2 = initialPlants.get(1); // 45.0
-        Plant roslinaDlaTomasz1 = initialPlants.get(2); // 80.0
+        Plant roslinaDlaMichal1 = initialPlants.get(0);
+        Plant roslinaDlaMichal2 = initialPlants.get(1);
+        Plant roslinaDlaTomasz1 = initialPlants.get(2);
 
         List<Plant> koszykMichal = new ArrayList<>(List.of(roslinaDlaMichal1, roslinaDlaMichal2));
         assertTrue(shopService.newSale(kupujacyMichal, koszykMichal), "Zakup Michała w Mongo powinien się powieść");
@@ -130,7 +126,7 @@ class MongoShopServiceTest {
         assertTrue(clientRepo.addClient(tomasz));
 
         List<Client> wszyscyKlienci = clientRepo.getClients();
-        Client tomaszZBazy = wszyscyKlienci.get(wszyscyKlienci.size() - 1);
+        Client tomaszZBazy = wszyscyKlienci.getLast();
 
         List<Plant> koszykTomasz = new ArrayList<>(List.of(roslinaDlaTomasz1));
         assertTrue(shopService.newSale(tomaszZBazy, koszykTomasz), "Zakup Tomasza powinien się powieść");
@@ -144,7 +140,7 @@ class MongoShopServiceTest {
         assertEquals(2, plantRepo.findAllUnsold().size(), "Niesprzedane powinny zostać 2 rośliny");
         assertEquals(2, saleRepo.sizeSales(), "W bazie powinny być 2 paragony");
 
-        Sale paragon1 = saleRepo.getClientSales(sprawdzonyMichal.getId()).get(0);
+        Sale paragon1 = saleRepo.getClientSales(sprawdzonyMichal.getId()).getFirst();
         assertNotNull(paragon1);
         assertEquals(2, paragon1.getPlants().size(), "Paragon 1 powinien zawierać 2 zdenormalizowane rośliny w Mongo");
     }
@@ -172,9 +168,7 @@ class MongoShopServiceTest {
         watekMichal.join();
         watekKlient2.join();
 
-        // W Mongo transakcja ClientSession rzuci WriteConflictException w drugim wątku, a adapter to złapie.
-        assertTrue(wynikMichal.get() ^ wynikKlient2.get(),
-                "Transakcja Mongo powinna zablokować wyścig. Tylko jedna przechodzi!");
+        assertTrue(wynikMichal.get() ^ wynikKlient2.get(), "Transakcja Mongo powinna zablokować wyścig. Tylko jedna przechodzi!");
 
         Client ostatecznyMichal = clientRepo.getClient(michal.getId());
         Client ostatecznyKlient2 = clientRepo.getClient(klient2.getId());
@@ -189,7 +183,7 @@ class MongoShopServiceTest {
     @DisplayName("6. Usuwanie paragonu z bazy dokumentowej")
     void shouldRemoveSale() {
         List<Client> clients = clientRepo.getClients();
-        Client michal = clients.get(0);
+        Client michal = clients.getFirst();
         List<Plant> plants = plantRepo.getPlants();
 
         assertTrue(shopService.newSale(michal, new ArrayList<>(List.of(plants.get(0)))));
@@ -208,8 +202,8 @@ class MongoShopServiceTest {
     @Test
     @DisplayName("7. Test próby kupienia już sprzedanej rośliny")
     void shouldRejectBuyingAlreadySoldPlantAndReturnClientHistory() {
-        Client michal = clientRepo.getClients().get(0);
-        Plant roslina1 = plantRepo.getPlants().get(0);
+        Client michal = clientRepo.getClients().getFirst();
+        Plant roslina1 = plantRepo.getPlants().getFirst();
 
         assertTrue(shopService.newSale(michal, new ArrayList<>(List.of(roslina1))));
 
@@ -225,11 +219,10 @@ class MongoShopServiceTest {
         assertFalse(sukcesSpozniony, "Transakcja Mongo powinna zostać wycofana (rollback)");
 
         Client verification = clientRepo.getClient(michal.getId());
-        assertEquals(michalBefore, verification.getMoneySpent(), 0.001,
-                "Wydatki Michała nie powinny wzrosnąć po odrzuconym zakupie");
+        assertEquals(michalBefore, verification.getMoneySpent(), 0.001, "Wydatki Michała nie powinny wzrosnąć po odrzuconym zakupie");
 
         List<Sale> zakupyMichal = saleRepo.getClientSales(michal.getId());
         assertEquals(1, zakupyMichal.size(), "Michał powinien mieć w historii dokładnie 1 udany zakup");
-        assertEquals(1, zakupyMichal.get(0).getPlants().size(), "Paragon Michała powinien zawierać 1 roślinę");
+        assertEquals(1, zakupyMichal.getFirst().getPlants().size(), "Paragon Michała powinien zawierać 1 roślinę");
     }
 }

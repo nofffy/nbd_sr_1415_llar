@@ -9,7 +9,10 @@ public class Plant {
     private PlantType plantType;
     private final int version;
 
-    public Plant() { this.version = 0; }
+    public Plant() {
+        this.version = 0;
+        this.sold = false;
+    }
 
     public Plant(String id, String name, String color, double cost, boolean sold, PlantType plantType, int version) {
         this.id = id;

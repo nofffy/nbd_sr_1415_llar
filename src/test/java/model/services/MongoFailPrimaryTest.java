@@ -22,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MongoFailPrimaryTest {
 
     private ClientRepository clientRepo;
-    private PlantRepository plantRepo;
-    private ShopService shopService;
 
     @BeforeEach
     void setUp() {
@@ -33,10 +31,24 @@ class MongoFailPrimaryTest {
         MongoDBManager.getDatabase().getCollection("sales").drop();
 
         clientRepo = new MongoClientRepositoryAdapter(new MongoClientRepository(db));
-        plantRepo = new MongoPlantRepositoryAdapter(new MongoPlantRepository(db));
-        SaleRepository saleRepo = new MongoSaleRepositoryAdapter(new MongoSaleRepository(db), new MongoClientRepository(db));
-        shopService = new ShopService(saleRepo);
     }
+
+    /* EKSPERYMENT PRZYGOTOWANIE
+    1. reset
+    -docker compose -f MONGOdocker-compose.yml down
+    -docker compose -f MONGOdocker-compose.yml up -d
+    2. przygotowac 3 okna terminala, w 1 wykonac:
+    docker exec -it mongodb2 mongosh --port 27018 -u admin -p adminpassword --authenticationDatabase admin --eval "rs.status()"
+    (latwo znalezc informacje o tym ktory jest primary, ewentualnie w komendzie wyzej zmienic ktory mongodb oraz port!)
+    3. w 2 pozostale okna wkleic ale jeszcze nie enter
+    -docker logs -f mongodb2 | grep -E "ELECTION" (wybrac te wezly ktore nie sa primary!!)
+    4. wykonujemy ten wlasnie test w intellij
+    5. w terminalu enter na komendy z logami
+    6. w tym jednym pozostalym okienku
+    -docker kill mongodb(cyferka tego primary)
+    7. obserwujemy jak w ktoryms okienku powstaja logi o wygranym ELECTION
+    8. na koniec mozna jeszcze raz sprawdzic komenda z punktu 3
+     */
 
     @Test
     @DisplayName("Test odporności klastra na awarię węzła Primary")
@@ -45,13 +57,13 @@ class MongoFailPrimaryTest {
         assertTrue(clientRepo.addClient(klient1));
 
         System.out.println("======================================================");
-        System.out.println("UWAGA! MASZ 30 SEKUND NA WYŁĄCZENIE WĘZŁA PRIMARY!");
-        System.out.println("Wpisz w terminalu: docker kill mongodb1");
+        System.out.println("UWAGA! MASZ 40 SEKUND NA WYŁĄCZENIE WĘZŁA PRIMARY!");
+        System.out.println("Wpisz w terminalu: docker kill mongodb(ten primary)");
         System.out.println("======================================================");
 
-        Thread.sleep(30000);
+        Thread.sleep(40000);
 
-        System.out.println("Czas minął! Próbuję zapisać dane mimo braku mongodb1...");
+        System.out.println("Czas minął! Próbuję zapisać dane mimo braku mongodb primary.");
         Client klient2 = new Client("Po Awarii");
         boolean sukces = clientRepo.addClient(klient2);
 

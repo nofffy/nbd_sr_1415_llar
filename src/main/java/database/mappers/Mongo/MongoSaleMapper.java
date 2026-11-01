@@ -1,6 +1,7 @@
 package database.mappers.Mongo;
 
 import database.entities.Mongo.ClientEnt;
+import database.entities.Mongo.SaleClientEnt;
 import database.entities.Mongo.SaleEnt;
 import model.Client;
 import model.Sale;
@@ -16,8 +17,14 @@ public class MongoSaleMapper {
         if (sale.getId() != null && ObjectId.isValid(sale.getId())) {
             ent.setId(new ObjectId(sale.getId()));
         }
-        if (sale.getClient() != null && sale.getClient().getId() != null && ObjectId.isValid(sale.getClient().getId())) {
-            ent.setClientId(new ObjectId(sale.getClient().getId()));
+        if (sale.getClient() != null) {
+            SaleClientEnt clientEnt = new SaleClientEnt();
+            if (sale.getClient().getId() != null && ObjectId.isValid(sale.getClient().getId())) {
+                clientEnt.setId(new ObjectId(sale.getClient().getId()));
+            }
+            clientEnt.setName(sale.getClient().getName());
+            clientEnt.setMember(sale.getClient().isMember());
+            ent.setClient(clientEnt);
         }
         ent.setTimeOfSale(sale.getTimeOfSale());
         if (sale.getPlants() != null) {
@@ -29,10 +36,15 @@ public class MongoSaleMapper {
         return ent;
     }
 
-    public static Sale EntToObj(SaleEnt saleEnt, Client client) {
+    public static Sale EntToObj(SaleEnt saleEnt) {
         if (saleEnt == null) return null;
 
         String id = saleEnt.getId() != null ? saleEnt.getId().toHexString() : null;
+        Client client = new Client(saleEnt.getClient().getName());
+        if (saleEnt.getClient() != null && saleEnt.getClient().getId() != null) {
+            client.setId(saleEnt.getClient().getId().toHexString());
+        }
+        client.setMember(saleEnt.getClient().isMember());
         return new Sale(
                 id,
                 client,

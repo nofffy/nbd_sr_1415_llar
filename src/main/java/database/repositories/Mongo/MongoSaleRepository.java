@@ -63,9 +63,9 @@ public class MongoSaleRepository {
     }
 
     public List<SaleEnt> getClientSales(ObjectId clientId) {
-        Bson filter = eq("clientId", clientId);
+        Bson filter = eq("client._id", clientId);
         try {
-            return collection.find(filter).into(new ArrayList<SaleEnt>());
+            return collection.find(filter).into(new ArrayList<>());
         } catch (Exception e) {
             return new ArrayList<>();
         }

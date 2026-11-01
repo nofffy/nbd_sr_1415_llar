@@ -4,9 +4,7 @@ import database.entities.Mongo.ClientEnt;
 import database.entities.Mongo.SaleEnt;
 import database.mappers.Mongo.MongoClientMapper;
 import database.mappers.Mongo.MongoSaleMapper;
-import database.repositories.Mongo.MongoClientRepository;
 import database.repositories.Mongo.MongoSaleRepository;
-import model.Client;
 import model.Sale;
 import model.repositories.SaleRepository;
 import org.bson.types.ObjectId;
@@ -17,11 +15,9 @@ import java.util.stream.Collectors;
 
 public class MongoSaleRepositoryAdapter implements SaleRepository {
     private final MongoSaleRepository repo;
-    private final MongoClientRepository clientRepo;
 
-    public MongoSaleRepositoryAdapter(MongoSaleRepository repo, MongoClientRepository clientRepo) {
+    public MongoSaleRepositoryAdapter(MongoSaleRepository repo) {
         this.repo = repo;
-        this.clientRepo = clientRepo;
     }
 
     @Override
@@ -30,8 +26,7 @@ public class MongoSaleRepositoryAdapter implements SaleRepository {
         if (saleEnt == null) {
             return null;
         }
-        Client client = MongoClientMapper.EntToObj(clientRepo.getClient(saleEnt.getClientId()));
-        return MongoSaleMapper.EntToObj(saleEnt, client);
+        return MongoSaleMapper.EntToObj(saleEnt);
     }
 
     @Override
@@ -62,11 +57,8 @@ public class MongoSaleRepositoryAdapter implements SaleRepository {
         if (saleEnts == null || saleEnts.isEmpty()) {
             return new ArrayList<>();
         }
-        ClientEnt clientEnt = clientRepo.getClient(clientObjectId);
-        Client client = MongoClientMapper.EntToObj(clientEnt);
-
         return saleEnts.stream()
-                .map(ent -> MongoSaleMapper.EntToObj(ent, client))
+                .map(MongoSaleMapper::EntToObj)
                 .collect(Collectors.toList());
     }
 
