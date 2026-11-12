@@ -100,6 +100,20 @@ services:
             ]
           });
         }'
+
+  redis-stack:
+    image: redis/redis-stack:latest
+    container_name: redis-cache
+    hostname: redis
+    networks:
+      - mongonet
+    ports:
+      - "8001:8001"
+      - "6379:6379"
+    volumes:
+      - redis-stack-data:/data
+    restart: always
+
 networks:
   mongonet: { }
 
@@ -108,4 +122,4 @@ volumes:
   mongo-configdb-data-1:
   mongo-db-data-2:
   mongo-db-data-3:
-  
+  redis-stack-data:
