@@ -1,5 +1,3 @@
-package model.services;
-
 import database.JpaMockDatabaseManager;
 import database.repositories.Jpa.adapters.JpaClientRepositoryAdapter;
 import database.repositories.Jpa.adapters.JpaPlantRepositoryAdapter;
@@ -10,6 +8,7 @@ import model.Sale;
 import model.repositories.ClientRepository;
 import model.repositories.PlantRepository;
 import model.repositories.SaleRepository;
+import model.services.ShopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

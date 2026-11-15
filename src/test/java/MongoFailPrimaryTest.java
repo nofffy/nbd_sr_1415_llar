@@ -1,17 +1,9 @@
-package model.services;
-
 import com.mongodb.client.MongoDatabase;
 import database.MongoDBManager;
 import database.repositories.Mongo.MongoClientRepository;
-import database.repositories.Mongo.MongoPlantRepository;
-import database.repositories.Mongo.MongoSaleRepository;
 import database.repositories.Mongo.adapters.MongoClientRepositoryAdapter;
-import database.repositories.Mongo.adapters.MongoPlantRepositoryAdapter;
-import database.repositories.Mongo.adapters.MongoSaleRepositoryAdapter;
 import model.Client;
 import model.repositories.ClientRepository;
-import model.repositories.PlantRepository;
-import model.repositories.SaleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

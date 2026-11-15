@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Plant {
     private String id; //UUID??
     private String name;
@@ -84,6 +86,7 @@ public class Plant {
         return version;
     }
 
+    @JsonIgnore
     public String getInfo() {
         return "Name: "+name+", color: "+color+", cost: "+cost+"; "+getPlantType().getInfo();
     }

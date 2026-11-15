@@ -3,8 +3,7 @@ package model.types;
 import model.PlantType;
 
 public class Basic implements PlantType {
-    public Basic() {
-    }
+    public Basic() {}
 
     @Override
     public double getUniqueValue() {

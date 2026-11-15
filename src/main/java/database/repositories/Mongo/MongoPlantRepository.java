@@ -52,7 +52,7 @@ public class MongoPlantRepository {
                     Updates.set("cost", plant.getCost()),
                     Updates.set("sold", plant.isSold()),
                     Updates.set("sale", plant.getSale()),
-                    Updates.set("plantType", plant.getType())
+                    Updates.set("plantType", plant.getPlantType())
             );
             UpdateResult result = collection.updateOne(filter, update);
             return result.getMatchedCount() > 0;
@@ -104,7 +104,7 @@ public class MongoPlantRepository {
 
     public int countSoldPlantsByType(String type) {
         Bson filter = Filters.and(
-                Filters.eq("plantType.type", type.toUpperCase()),
+                Filters.eq("plantType.plantType", type),
                 Filters.eq("sold", true)
         );
         try {

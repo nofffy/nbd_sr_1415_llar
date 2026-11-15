@@ -5,6 +5,8 @@ import model.PlantType;
 public class Carnivorous implements PlantType {
     private String favouriteFood;
 
+    public Carnivorous() {}
+
     public Carnivorous(String favouriteFood) {
         this.favouriteFood = favouriteFood;
     }

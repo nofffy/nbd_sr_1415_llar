@@ -9,7 +9,11 @@ import redis.clients.jedis.RedisClient;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static redis.clients.jedis.params.SetParams.setParams;
 
 public class RedisPlantRepositoryAdapter implements PlantRepository {
     private static final Logger log = LoggerFactory.getLogger(RedisPlantRepositoryAdapter.class);
@@ -17,10 +21,18 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
     private final RedisClient jedis;
     private final PlantRepository plantRepository;
     private final ObjectMapper objectMapper;
+    private final int TTLvalue = 600;
 
     public RedisPlantRepositoryAdapter(PlantRepository plantRepository) {
         this.plantRepository = plantRepository;
         this.jedis = RedisCacheManager.getRedisClient();
+        this.objectMapper = new ObjectMapper();
+    }
+
+    //do testow
+    public RedisPlantRepositoryAdapter(PlantRepository plantRepository, RedisClient jedis) {
+        this.plantRepository = plantRepository;
+        this.jedis = jedis;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -32,12 +44,16 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
 
     private void delCache(Plant plant) {
         try {
-            jedis.del(plant_all);
-            jedis.del(plant_sold);
-            jedis.del(plant_unsold);
-            if(plant != null) {
-                jedis.del(plant_type_sold+plant.getPlantType().getClass().getSimpleName());
+            jedis.del(plant_all, plant_sold, plant_unsold);
+            if (plant != null) {
+                if (plant.getId() != null) {
+                    jedis.del(plant_prefix+plant.getId());
+                }
+                if (plant.getPlantType() != null) {
+                    jedis.del(plant_type_sold + plant.getPlantType().getInfo());
+                }
             }
+
         } catch (Exception e) {
             log.warn("Failed to delete from cache (single plant method).");
         }
@@ -45,16 +61,20 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
 
     private void delCache(List<Plant> plants) {
         try {
-            jedis.del(plant_all);
-            jedis.del(plant_sold);
-            jedis.del(plant_unsold);
+            Set<String> keysToDelete = new HashSet<>(Set.of(plant_all, plant_sold, plant_unsold));
             if (plants != null) {
                 for (Plant plant : plants) {
-                    if (plant != null && plant.getPlantType() != null) {
-                        jedis.del(plant_type_sold + plant.getPlantType().getClass().getSimpleName());
+                    if (plant != null) {
+                        if (plant.getId() != null) {
+                            keysToDelete.add(plant_prefix + plant.getId());
+                        }
+                        if (plant.getPlantType() != null) {
+                            keysToDelete.add(plant_type_sold + plant.getPlantType().getInfo());
+                        }
                     }
                 }
             }
+            jedis.del(keysToDelete.toArray(new String[0]));
         } catch (Exception e) {
             log.warn("Failed to delete from cache (plant list method).");
         }
@@ -74,8 +94,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         Plant plant = plantRepository.getPlant(id);
         if (plant != null) {
             try {
-                jedis.set(key, objectMapper.writeValueAsString(plant));
-                jedis.expire(key, 600);
+                jedis.set(key, objectMapper.writeValueAsString(plant), setParams().ex(TTLvalue));
             } catch (Exception e) {
                 log.warn("Failed to write to cache. Plant with id: {}", id, e);
             }
@@ -94,10 +113,9 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
 
     @Override
     public boolean removePlant(String id) {
-        Plant plant = plantRepository.getPlant(id);
+        Plant plant = getPlant(id);
         boolean success = plantRepository.removePlant(id);
         if (success) {
-            jedis.del(plant_prefix+id);
             delCache(plant);
         }
         return success;
@@ -107,7 +125,6 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
     public boolean updatePlant(Plant plant) {
         boolean success = plantRepository.updatePlant(plant);
         if (success) {
-            jedis.del(plant_prefix+plant.getId());
             delCache(plant);
         }
         return success;
@@ -135,8 +152,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         List<Plant> plants = plantRepository.getPlants();
         if (plants != null) {
             try {
-                jedis.set(plant_all, objectMapper.writeValueAsString(plants));
-                jedis.expire(plant_all, 600);
+                jedis.set(plant_all, objectMapper.writeValueAsString(plants), setParams().ex(TTLvalue));
             } catch (Exception e) {
                 log.warn("Failed to write to cache (list of plants).", e);
             }
@@ -157,8 +173,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         List<Plant> plants = plantRepository.findAllUnsold();
         if (plants != null) {
             try {
-                jedis.set(plant_unsold, objectMapper.writeValueAsString(plants));
-                jedis.expire(plant_unsold, 600);
+                jedis.set(plant_unsold, objectMapper.writeValueAsString(plants), setParams().ex(TTLvalue));
             } catch (Exception e) {
                 log.warn("Failed to write to cache (list of unsold plants).", e);
             }
@@ -179,8 +194,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         List<Plant> plants = plantRepository.findAllSold();
         if (plants != null) {
             try {
-                jedis.set(plant_sold, objectMapper.writeValueAsString(plants));
-                jedis.expire(plant_sold, 600);
+                jedis.set(plant_sold, objectMapper.writeValueAsString(plants), setParams().ex(TTLvalue));
             } catch (Exception e) {
                 log.warn("Failed to write to cache (list of sold plants).", e);
             }
@@ -190,7 +204,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
 
     @Override
     public int countSoldPlantsByType(Class<?> modelClass) {
-        String name = modelClass.getSimpleName();
+        String name = modelClass.getSimpleName().toUpperCase();
         String key = plant_type_sold + name;
         try {
             String value = jedis.get(key);
@@ -202,8 +216,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         }
         int result = plantRepository.countSoldPlantsByType(modelClass);
         try {
-            jedis.set(key, String.valueOf(result));
-            jedis.expire(key, 600);
+            jedis.set(key, String.valueOf(result), setParams().ex(TTLvalue));
         } catch (Exception e) {
             log.warn("Failed to write to cache (number of sold plants of {} class).", name, e);
         }

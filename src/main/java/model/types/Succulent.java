@@ -3,7 +3,9 @@ package model.types;
 import model.PlantType;
 
 public class Succulent implements PlantType {
-    private final boolean spiky;
+    private boolean spiky;
+
+    public Succulent() {}
 
     public Succulent(boolean spiky) {
         this.spiky = spiky;

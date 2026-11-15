@@ -24,7 +24,7 @@ public class MongoPlantMapper {
         ent.setColor(plant.getColor());
         ent.setCost(plant.getCost());
         ent.setSold(plant.isSold());
-        ent.setType(typeToEnt(plant.getPlantType()));
+        ent.setPlantType(typeToEnt(plant.getPlantType()));
 
         return ent;
     }
@@ -41,7 +41,7 @@ public class MongoPlantMapper {
                 plantEnt.getColor(),
                 plantEnt.getCost(),
                 plantEnt.isSold(),
-                typeToModel(plantEnt.getType())
+                typeToModel(plantEnt.getPlantType())
         );
     }
 
@@ -51,13 +51,15 @@ public class MongoPlantMapper {
         }
 
         PlantTypeEnt ent = new PlantTypeEnt();
-        ent.setType(type.getInfo());
+        ent.setPlantType(type.getInfo());
         if (type instanceof Succulent) {
             ent.setSpiky(((Succulent) type).isSpiky());
         } else if (type instanceof Monstera) {
             ent.setLeafSize(((Monstera) type).getLeafSize());
         } else if (type instanceof Carnivorous) {
             ent.setFavouriteFood(((Carnivorous) type).getFavouriteFood());
+        } else if (type instanceof Basic) {
+            ;
         } else {
             throw new IllegalArgumentException("Nieznany typ");
         }
@@ -66,23 +68,23 @@ public class MongoPlantMapper {
     }
 
     private static PlantType typeToModel(PlantTypeEnt ent) {
-        if (ent == null || ent.getType() == null) {
+        if (ent == null || ent.getPlantType() == null) {
             return null;
         }
 
-        if (ent.getType().equals("SUCCULENT")) {
+        if (ent.getPlantType().equals("SUCCULENT")) {
             if (ent.getSpiky() != null) {
                 return new Succulent(ent.getSpiky());
             } throw new IllegalArgumentException("Zle dane Succulent");
-        } else if (ent.getType().equals("MONSTERA")) {
+        } else if (ent.getPlantType().equals("MONSTERA")) {
             if (ent.getLeafSize() != null) {
                 return new Monstera(ent.getLeafSize());
             } throw new IllegalArgumentException("Zle dane Monstera");
-        } else if (ent.getType().equals("CARNIVOROUS")) {
+        } else if (ent.getPlantType().equals("CARNIVOROUS")) {
             if (ent.getFavouriteFood() != null) {
                 return new Carnivorous(ent.getFavouriteFood());
             } throw new IllegalArgumentException("Zle dane Carnivorous");
-        } else if (ent.getType().equals("BASIC")) {
+        } else if (ent.getPlantType().equals("BASIC")) {
             return new Basic();
         } else {
             throw new IllegalArgumentException("Nieznany typ");

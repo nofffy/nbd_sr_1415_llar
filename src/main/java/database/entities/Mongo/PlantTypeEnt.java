@@ -1,7 +1,7 @@
 package database.entities.Mongo;
 
 public class PlantTypeEnt {
-    private String type;
+    private String plantType;
 
     private Boolean spiky;
     private String favouriteFood;
@@ -9,12 +9,12 @@ public class PlantTypeEnt {
 
     public PlantTypeEnt() {}
 
-    public String getType() {
-        return type;
+    public String getPlantType() {
+        return plantType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPlantType(String plantType) {
+        this.plantType = plantType;
     }
 
     public Boolean getSpiky() {

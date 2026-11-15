@@ -10,7 +10,7 @@ public class PlantEnt {
     private String color;
     private double cost;
     private boolean sold;
-    private PlantTypeEnt type;
+    private PlantTypeEnt plantType;
     private ObjectId sale;
 
     public PlantEnt() {}
@@ -55,9 +55,13 @@ public class PlantEnt {
         this.sold = sold;
     }
 
-    public PlantTypeEnt getType() { return type; }
+    public PlantTypeEnt getPlantType() {
+        return plantType;
+    }
 
-    public void setType(PlantTypeEnt type) { this.type = type; }
+    public void setPlantType(PlantTypeEnt plantType) {
+        this.plantType = plantType;
+    }
 
     public ObjectId getSale() { return sale; }
 

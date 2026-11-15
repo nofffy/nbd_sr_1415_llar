@@ -3,10 +3,16 @@ package model.types;
 import model.PlantType;
 
 public class Monstera implements PlantType {
-    private final int leafSize;
+    private int leafSize;
+
+    public Monstera() {}
 
     public Monstera(int leafSize) {
         if(leafSize < 0) throw new IllegalArgumentException("leafSize cannot be negative");
+        this.leafSize = leafSize;
+    }
+
+    public void setLeafSize(int leafSize) {
         this.leafSize = leafSize;
     }
 

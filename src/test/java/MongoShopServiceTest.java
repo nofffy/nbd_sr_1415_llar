@@ -1,5 +1,3 @@
-package model.services;
-
 import database.MongoDBManager;
 import database.repositories.Mongo.MongoClientRepository;
 import database.repositories.Mongo.MongoPlantRepository;
@@ -13,6 +11,7 @@ import model.Sale;
 import model.repositories.ClientRepository;
 import model.repositories.PlantRepository;
 import model.repositories.SaleRepository;
+import model.services.ShopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

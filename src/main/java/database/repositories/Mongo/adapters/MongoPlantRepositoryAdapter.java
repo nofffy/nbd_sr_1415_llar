@@ -91,6 +91,6 @@ public class MongoPlantRepositoryAdapter implements PlantRepository {
 
     @Override
     public int countSoldPlantsByType(Class<?> modelClass) {
-        return repo.countSoldPlantsByType(modelClass.getSimpleName());
+        return repo.countSoldPlantsByType(modelClass.getSimpleName().toUpperCase());
     }
 }
