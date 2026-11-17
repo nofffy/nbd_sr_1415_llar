@@ -125,4 +125,21 @@ class RedisCacheTest {
         assertTrue(jedis.ttl(plant_type_sold+"BASIC") > ttl);
     }
 
+    @Test
+    void cacheInvalidationTest() {
+        assertNull(jedis.get(plant_all));
+        List<Plant> fetcheds = repo.getPlants();
+        assertNotNull(jedis.get(plant_all));
+        Plant p4 = new Plant(); p4.setCost(350.0); p4.setPlantType(new Carnivorous("Fly")); p4.setSold(true);
+        repo.addPlant(p4);
+        assertNull(jedis.get(plant_all));
+
+        assertNull(jedis.get(plant_prefix + id1));
+        Plant fetched = repo.getPlant(id1);
+        assertNotNull(jedis.get(plant_prefix + id1));
+
+        fetched.setSold(false);
+        repo.updatePlant(fetched);
+        assertNull(jedis.get(plant_prefix + id1));
+    }
 }
