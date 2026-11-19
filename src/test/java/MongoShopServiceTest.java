@@ -1,3 +1,4 @@
+import com.mongodb.client.MongoDatabase;
 import database.MongoDBManager;
 import database.repositories.Mongo.MongoClientRepository;
 import database.repositories.Mongo.MongoPlantRepository;
@@ -5,6 +6,7 @@ import database.repositories.Mongo.MongoSaleRepository;
 import database.repositories.Mongo.adapters.MongoClientRepositoryAdapter;
 import database.repositories.Mongo.adapters.MongoPlantRepositoryAdapter;
 import database.repositories.Mongo.adapters.MongoSaleRepositoryAdapter;
+import database.repositories.Mongo.adapters.RedisPlantRepositoryAdapter;
 import model.Client;
 import model.Plant;
 import model.Sale;
@@ -15,7 +17,6 @@ import model.services.ShopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import com.mongodb.client.MongoDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,8 @@ class MongoShopServiceTest {
         db.getCollection("plants").drop();
         db.getCollection("sales").drop();
 
-        plantRepo = new MongoPlantRepositoryAdapter(new MongoPlantRepository(db));
+        //plantRepo = new MongoPlantRepositoryAdapter(new MongoPlantRepository(db));
+        plantRepo = new RedisPlantRepositoryAdapter(new MongoPlantRepositoryAdapter(new  MongoPlantRepository(db)));
         clientRepo = new MongoClientRepositoryAdapter(new MongoClientRepository(db));
         saleRepo = new MongoSaleRepositoryAdapter(new MongoSaleRepository(db));
         shopService = new ShopService(saleRepo);
