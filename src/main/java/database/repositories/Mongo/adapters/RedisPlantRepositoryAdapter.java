@@ -29,13 +29,6 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         this.objectMapper = new ObjectMapper();
     }
 
-    //do testow
-    public RedisPlantRepositoryAdapter(PlantRepository plantRepository, RedisClient jedis) {
-        this.plantRepository = plantRepository;
-        this.jedis = jedis;
-        this.objectMapper = new ObjectMapper();
-    }
-
     private final String plant_prefix = "plant:";
     private final String plant_all = "plants:all";
     private final String plant_sold = "plants:sold";

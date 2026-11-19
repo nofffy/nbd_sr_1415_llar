@@ -10,6 +10,7 @@ import model.Plant;
 import model.repositories.PlantRepository;
 import model.types.Basic;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
@@ -22,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
 @Fork(1)
-@Warmup(iterations = 5, time = 1)
-@Measurement(iterations = 3, time = 1)
+@Warmup(iterations = 4, time = 1)
+@Measurement(iterations = 2, time = 1)
 public class RedisBenchmarkTest {
 
     private PlantRepository mongoRepo;
@@ -100,6 +101,8 @@ public class RedisBenchmarkTest {
     public static void main(String[] args) throws Exception {
         Options opt = new OptionsBuilder()
                 .include(RedisBenchmarkTest.class.getSimpleName())
+                .result("RedisBenchmark.txt")
+                .resultFormat(ResultFormatType.TEXT)
                 .build();
         new Runner(opt).run();
     }
