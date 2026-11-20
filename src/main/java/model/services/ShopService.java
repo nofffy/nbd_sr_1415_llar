@@ -1,17 +1,21 @@
 package model.services;
 
+import database.repositories.Mongo.adapters.RedisPlantRepositoryAdapter;
 import model.Client;
 import model.Plant;
 import model.Sale;
+import model.repositories.PlantRepository;
 import model.repositories.SaleRepository;
 
 import java.util.List;
 
 public class ShopService {
     private final SaleRepository saleRepo;
+    private final RedisPlantRepositoryAdapter plantRepo;
 
-    public ShopService(SaleRepository saleRepo) {
+    public ShopService(SaleRepository saleRepo, RedisPlantRepositoryAdapter plantRepo) {
         this.saleRepo = saleRepo;
+        this.plantRepo = plantRepo;
     }
 
     public boolean newSale(Client client, List<Plant> plants) {
@@ -32,6 +36,10 @@ public class ShopService {
 
         Sale sale = new Sale(client, plants);
 
-        return saleRepo.addSale(sale);
+        boolean validSale = saleRepo.addSale(sale);
+        if (validSale) {
+            plantRepo.delCache(plants);
+        }
+        return validSale;
     }
 }

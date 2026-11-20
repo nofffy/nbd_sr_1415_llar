@@ -2,6 +2,7 @@ import database.JpaMockDatabaseManager;
 import database.repositories.Jpa.adapters.JpaClientRepositoryAdapter;
 import database.repositories.Jpa.adapters.JpaPlantRepositoryAdapter;
 import database.repositories.Jpa.adapters.JpaSaleRepositoryAdapter;
+import database.repositories.Mongo.adapters.RedisPlantRepositoryAdapter;
 import model.Client;
 import model.Plant;
 import model.Sale;
@@ -34,7 +35,7 @@ class JpaShopServiceTest {
         plantRepo = new JpaPlantRepositoryAdapter();
         clientRepo = new JpaClientRepositoryAdapter();
         saleRepo = new JpaSaleRepositoryAdapter();
-        shopService = new ShopService(saleRepo);
+        shopService = new ShopService(saleRepo, (RedisPlantRepositoryAdapter) plantRepo);
     }
 
     @Test

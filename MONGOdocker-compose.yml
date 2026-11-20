@@ -4,8 +4,8 @@ services:
     image: mongocustom:8.0.1
     container_name: mongodb1
     hostname: mongodb1
-    networks:
-      - mongonet
+#    networks:
+#      - mongonet
     ports:
       - "27017:27017"
     volumes:
@@ -28,8 +28,8 @@ services:
     image: mongocustom:8.0.1
     container_name: mongodb2
     hostname: mongodb2
-    networks:
-      - mongonet
+#    networks:
+#      - mongonet
     ports:
       - "27018:27018"
     volumes:
@@ -50,8 +50,8 @@ services:
     image: mongocustom:8.0.1
     container_name: mongodb3
     hostname: mongodb3
-    networks:
-      - mongonet
+#    networks:
+#      - mongonet
     ports:
       - "27019:27019"
     volumes:
@@ -73,8 +73,8 @@ services:
     image: mongocustom:8.0.1
     hostname: mongodbinit
     container_name: mongodbinit
-    networks:
-      - mongonet
+#    networks:
+#      - mongonet
     depends_on:
       mongo_1:
         condition: service_healthy
@@ -105,8 +105,8 @@ services:
     image: redis/redis-stack:latest
     container_name: redis-cache
     hostname: redis
-    networks:
-      - mongonet
+#    networks:
+#      - mongonet
     ports:
       - "8001:8001"
       - "6379:6379"
@@ -114,8 +114,8 @@ services:
       - redis-stack-data:/data
     restart: always
 
-networks:
-  mongonet: { }
+#networks:
+#  mongonet: { }
 
 volumes:
   mongo-db-data-1:

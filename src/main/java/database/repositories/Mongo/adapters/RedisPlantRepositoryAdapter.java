@@ -35,7 +35,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
     private final String plant_unsold = "plants:unsold";
     private final String plant_type_sold = "plants:count_sold:";
 
-    private void delCache(Plant plant) {
+    public void delCache(Plant plant) {
         try {
             jedis.del(plant_all, plant_sold, plant_unsold);
             if (plant != null) {
@@ -52,7 +52,7 @@ public class RedisPlantRepositoryAdapter implements PlantRepository {
         }
     }
 
-    private void delCache(List<Plant> plants) {
+    public void delCache(List<Plant> plants) {
         try {
             Set<String> keysToDelete = new HashSet<>(Set.of(plant_all, plant_sold, plant_unsold));
             if (plants != null) {

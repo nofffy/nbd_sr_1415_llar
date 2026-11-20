@@ -42,7 +42,7 @@ class MongoShopServiceTest {
         plantRepo = new RedisPlantRepositoryAdapter(new MongoPlantRepositoryAdapter(new  MongoPlantRepository(db)));
         clientRepo = new MongoClientRepositoryAdapter(new MongoClientRepository(db));
         saleRepo = new MongoSaleRepositoryAdapter(new MongoSaleRepository(db));
-        shopService = new ShopService(saleRepo);
+        shopService = new ShopService(saleRepo, (RedisPlantRepositoryAdapter) plantRepo);
 
         clientRepo.addClient(new Client("Michal"));
         clientRepo.addClient(new Client("Klient 2"));
